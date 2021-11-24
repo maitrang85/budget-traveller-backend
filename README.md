@@ -4,9 +4,9 @@ Backend and Database part for project Budget Traveler - Group Naturae - Fall 202
 
 ## Group Members:
 
-Hang Huynh 
-Miro Taxell 
-Trang Nguyen
+* Hang Huynh 
+* Miro Taxell 
+* Trang Nguyen
 
 ## Project Description
 
