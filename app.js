@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/post', postRoute);
-//app.use('/user', userRoute);
+app.use('/user', userRoute);
 
 app.use((req, res, next) => {
   const err = httpError('Not found', 404);

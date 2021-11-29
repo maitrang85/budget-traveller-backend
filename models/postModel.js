@@ -81,8 +81,6 @@ const updatePost = async (post, next) => {
 
   post.edittedDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
-  console.log(post);
-
   try {
     const [rows] = await promisePool.execute(
       'UPDATE camping_site SET title = ?, address =?, content = ?, region_id = ?, editted_date = ?, free_or_not = ?, price = ?, user_id = ? WHERE post_id = ?',

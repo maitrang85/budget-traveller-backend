@@ -63,7 +63,7 @@ const post_update = async (req, res) => {
   req.body.id = req.params.postId;
 
   const updated = await updatePost(req.body);
-  res.json({ message: `Cat updated: ${updated}` });
+  res.json({ message: `Post updated: ${updated}` });
 };
 
 module.exports = {
