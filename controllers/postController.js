@@ -1,5 +1,7 @@
 'use strict';
 
+const moment = require('moment');
+
 const {
   getAllPosts,
   getPost,
@@ -23,7 +25,7 @@ const post_list_get = async (req, res, next) => {
 };
 
 const post_get = async (req, res, next) => {
-  const post = await getPost(req.params.postId, next);
+  const post = await getPost(req.params.postId);
 
   if (post) {
     res.json(post);
@@ -40,10 +42,18 @@ const post_post = async (req, res, next) => {
     next(err);
     return;
   } */
+  const post = req.body;
+
+  if (!post.address) {
+    post.address = '';
+  }
+
+  if (post.freeOrNot === 'free') {
+    post.price = 0.0;
+  }
 
   try {
-    const post = req.body;
-    /* post.filename = req.file.filename; */
+    /* post.filename = req.files['photos']; */
     const id = await insertPost(post);
     res.json({ message: `A post created with id ${id}`, post_id: id });
   } catch (e) {
@@ -60,8 +70,18 @@ const post_delete = async (req, res) => {
 };
 
 const post_update = async (req, res) => {
-  req.body.id = req.params.postId;
+  req.body.postId = req.params.postId;
 
+  if (!req.body.address) {
+    req.body.address = '';
+  }
+
+  if (req.body.freeOrNot === 'free') {
+    req.body.price = 0.0;
+  }
+
+  req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  console.log(req.body);
   const updated = await updatePost(req.body);
   res.json({ message: `Post updated: ${updated}` });
 };

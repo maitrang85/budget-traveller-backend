@@ -82,11 +82,11 @@ typings/
 .DS_Store
 
 # ignore content of uploads folder
-*/uploads/*
-*/thumbnails/*
+uploads/*
+thumbnails/*
 # except one (empty) file to have the folder in version control
-!*/uploads/.gitkeep
-!*/thumbnails/.gitkeep
+!uploads/.gitkeep
+!thumbnails/.gitkeep
 #IDEA
 .idea/
 

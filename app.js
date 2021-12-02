@@ -2,9 +2,10 @@
 
 const express = require('express');
 const cors = require('cors');
+const { httpError } = require('./utils/errors');
 const postRoute = require('./routes/postRoute');
 const userRoute = require('./routes/userRoute');
-const { httpError } = require('./utils/errors');
+const commentRoute = require('./routes/commentRoute');
 const app = express();
 const port = 3000;
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/post', postRoute);
 app.use('/user', userRoute);
+app.use('/post/:postId/comment', commentRoute);
 
 app.use((req, res, next) => {
   const err = httpError('Not found', 404);

@@ -60,7 +60,7 @@ const updateUser = async (user, next) => {
   try {
     const [rows] = await promisePool.query(
       'UPDATE camping_user SET username = ?, email = ?, password = ? WHERE user_id = ?',
-      [user.username, user.email, user.password, user.id]
+      [user.username, user.email, user.password, user.userId]
     );
     return rows.affectedRows === 1;
   } catch (e) {

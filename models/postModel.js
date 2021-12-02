@@ -3,14 +3,15 @@
 const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
-const moment = require('moment');
 
 const getAllPosts = async (next) => {
   try {
-    const [rows] = await promisePool.query('SELECT * FROM camping_site');
+    const [rows] = await promisePool.query(
+      'SELECT * FROM camping_site ORDER BY edited_date DESC'
+    );
     return rows;
   } catch (e) {
-    const err = httpError('SQL error', 500);
+    const err = httpError('SQL getAllPosts error', 500);
     next(err);
   }
 };
@@ -23,7 +24,7 @@ const getPost = async (postId, next) => {
     );
     return rows[0];
   } catch (e) {
-    const err = httpError('SQL error', 500);
+    const err = httpError('SQL getPost error', 500);
     next(err);
   }
 };
@@ -71,37 +72,43 @@ const deletePost = async (postId, next) => {
 };
 
 const updatePost = async (post, next) => {
-  if (!post.address) {
-    post.address = '';
-  }
-
-  if (post.freeOrNot === 'free') {
-    post.price = 0.0;
-  }
-
-  post.edittedDate = moment().format('YYYY-MM-DD HH:mm:ss');
-
   try {
     const [rows] = await promisePool.execute(
-      'UPDATE camping_site SET title = ?, address =?, content = ?, region_id = ?, editted_date = ?, free_or_not = ?, price = ?, user_id = ? WHERE post_id = ?',
+      'UPDATE camping_site SET title = ?, address =?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, user_id = ? WHERE post_id = ?',
       [
         post.title,
         post.address,
         post.content,
         post.regionId,
-        post.edittedDate,
+        post.editedDate,
         post.freeOrNot,
         post.price,
         post.userId,
-        post.id,
+        post.postId,
       ]
     );
 
-    return rows.affectedRows === 1;
+    /*  const sql = addImagesToDatabase(post.filename, rows.affectedRows);
+
+    const [img_row] = await promisePool.execute(sql); */
+
+    return rows.affectedRows === 1 /* && img_row.affectedRows !== 0 */;
   } catch (e) {
     const err = httpError('Cannot insert post', 500);
     next(err);
   }
+};
+
+const addImagesToDatabase = (photos, postId) => {
+  const sqlValues = photos.map((photo) => {
+    photo = '(' + photo + ',' + postId + ')';
+  });
+
+  sqlValues = sqlValues.join(', ');
+  const sql =
+    'INSERT INTO camping_image(filename, post_id) VALUES ' + sqlValues;
+
+  return sql;
 };
 
 module.exports = {
