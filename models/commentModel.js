@@ -60,7 +60,7 @@ const updateComment = async (comment, next) => {
   try {
     const [rows] = await promisePool.execute(
       'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?',
-      [comment.content, comment.edittedDate, comment.userId, comment.commentId]
+      [comment.content, comment.editedDate, comment.userId, comment.commentId]
     );
     return rows.affectedRows === 1;
   } catch (e) {

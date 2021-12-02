@@ -80,7 +80,7 @@ const post_update = async (req, res) => {
     req.body.price = 0.0;
   }
 
-  req.body.edittedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
   console.log(req.body);
   const updated = await updatePost(req.body);
   res.json({ message: `Post updated: ${updated}` });

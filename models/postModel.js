@@ -7,7 +7,7 @@ const promisePool = pool.promise();
 const getAllPosts = async (next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT * FROM camping_site ORDER BY editted_date DESC'
+      'SELECT * FROM camping_site ORDER BY edited_date DESC'
     );
     return rows;
   } catch (e) {
@@ -74,13 +74,13 @@ const deletePost = async (postId, next) => {
 const updatePost = async (post, next) => {
   try {
     const [rows] = await promisePool.execute(
-      'UPDATE camping_site SET title = ?, address =?, content = ?, region_id = ?, editted_date = ?, free_or_not = ?, price = ?, user_id = ? WHERE post_id = ?',
+      'UPDATE camping_site SET title = ?, address =?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, user_id = ? WHERE post_id = ?',
       [
         post.title,
         post.address,
         post.content,
         post.regionId,
-        post.edittedDate,
+        post.editedDate,
         post.freeOrNot,
         post.price,
         post.userId,

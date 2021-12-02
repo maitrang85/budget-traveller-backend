@@ -57,7 +57,7 @@ const comment_delete = async (req, res) => {
 
 const comment_update = async (req, res) => {
   req.body.commentId = req.params.commentId;
-  req.body.edittedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
   const updated = await updateComment(req.body);
   res.json({ message: `Comment updated: ${updated}` });
