@@ -6,7 +6,9 @@ const promisePool = pool.promise();
 
 const getAllPosts = async (next) => {
   try {
-    const [rows] = await promisePool.query('SELECT * FROM camping_site');
+    const [rows] = await promisePool.query(
+      'SELECT * FROM camping_site ORDER BY editted_date DESC'
+    );
     return rows;
   } catch (e) {
     const err = httpError('SQL getAllPosts error', 500);
