@@ -11,7 +11,8 @@ const getAllUsers = async (next) => {
     );
     return rows;
   } catch (e) {
-    const err = httpError('SQL error', 500);
+    console.error('Model getAllUsers ', e.message);
+    const err = httpError('SQL error in getAllUsers model', 500);
     next(err);
   }
 };
@@ -24,7 +25,8 @@ const getUser = async (userId, next) => {
     );
     return rows[0];
   } catch (e) {
-    const err = httpError('SQL error', 500);
+    console.error('Model getUser ', e.message);
+    const err = httpError('SQL error in getUser model', 500);
     next(err);
   }
 };
@@ -37,6 +39,7 @@ const insertUser = async (user, next) => {
     );
     return rows.insertId;
   } catch (e) {
+    console.error('Model insertUser ', e.message);
     const err = httpError('Cannot insert user', 500);
     next(err);
   }
@@ -50,6 +53,7 @@ const deleteUser = async (userId, next) => {
     );
     return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model deleteUser ', e.message);
     const err = httpError('Cannot delete user', 500);
     next(err);
   }
@@ -64,6 +68,7 @@ const updateUser = async (user, next) => {
     );
     return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model updateUser ', e.message);
     const err = httpError('Cannot insert user', 500);
     next(err);
   }

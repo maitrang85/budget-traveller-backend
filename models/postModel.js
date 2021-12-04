@@ -11,6 +11,7 @@ const getAllPosts = async (next) => {
     );
     return rows;
   } catch (e) {
+    console.error('Model getAllPosts ', e.message);
     const err = httpError('SQL getAllPosts error', 500);
     next(err);
   }
@@ -24,6 +25,7 @@ const getPost = async (postId, next) => {
     );
     return rows[0];
   } catch (e) {
+    console.error('Model getPost ', e.message);
     const err = httpError('SQL getPost error', 500);
     next(err);
   }
@@ -51,8 +53,12 @@ const insertPost = async (post, next) => {
         post.userId,
       ]
     );
+
+    const sql = addImagesToDatabase(post.filenames, rows.insertId);
+    const [img_rows] = await promisePool.execute(sql);
     return rows.insertId;
   } catch (e) {
+    console.error('Model insertPost ', e.message);
     const err = httpError('Cannot insert post', 500);
     next(err);
   }
@@ -66,6 +72,7 @@ const deletePost = async (postId, next) => {
     );
     return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model deletePost ', e.message);
     const err = httpError('Cannot delete post', 500);
     next(err);
   }
@@ -88,26 +95,29 @@ const updatePost = async (post, next) => {
       ]
     );
 
-    /*  const sql = addImagesToDatabase(post.filename, rows.affectedRows);
+    const [deletedImg] = await promisePool.execute(
+      'DELETE FROM camping_image WHERE post_id = ?',
+      [post.postId]
+    );
+    console.log('post filenames', post.filenames);
+    const sql = addImagesToDatabase(post.filenames, post.postId);
+    const [img_rows] = await promisePool.execute(sql);
 
-    const [img_row] = await promisePool.execute(sql); */
-
-    return rows.affectedRows === 1 /* && img_row.affectedRows !== 0 */;
+    return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model updatePost ', e.message);
     const err = httpError('Cannot insert post', 500);
     next(err);
   }
 };
 
 const addImagesToDatabase = (photos, postId) => {
-  const sqlValues = photos.map((photo) => {
-    photo = '(' + photo + ',' + postId + ')';
+  let sqlValues = photos.map((photo) => {
+    return `('${photo.filename}', ${postId})`;
   });
 
   sqlValues = sqlValues.join(', ');
-  const sql =
-    'INSERT INTO camping_image(filename, post_id) VALUES ' + sqlValues;
-
+  const sql = `INSERT INTO camping_image(filename, post_id) VALUES ${sqlValues};`;
   return sql;
 };
 

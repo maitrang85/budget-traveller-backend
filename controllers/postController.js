@@ -37,12 +37,14 @@ const post_get = async (req, res, next) => {
 };
 
 const post_post = async (req, res, next) => {
-  /* if (!req.file) {
+  const post = req.body;
+  post.filenames = req.files;
+
+  if (req.files.length === 0) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
-  } */
-  const post = req.body;
+  }
 
   if (!post.address) {
     post.address = '';
@@ -53,37 +55,54 @@ const post_post = async (req, res, next) => {
   }
 
   try {
-    /* post.filename = req.files['photos']; */
-    const id = await insertPost(post);
+    const id = await insertPost(post, next);
     res.json({ message: `A post created with id ${id}`, post_id: id });
   } catch (e) {
+    console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
     next(err);
     return;
   }
 };
 
-const post_delete = async (req, res) => {
-  const deleted = await deletePost(req.params.postId);
-
-  res.json({ message: `Post deleted: ${deleted} ` });
+const post_delete = async (req, res, next) => {
+  try {
+    const deleted = await deletePost(req.params.postId, next);
+    res.json({ message: `Post deleted: ${deleted} ` });
+  } catch (e) {
+    const err = httpError('Error deleting post', 400);
+    next(err);
+    return;
+  }
 };
 
-const post_update = async (req, res) => {
-  req.body.postId = req.params.postId;
+const post_update = async (req, res, next) => {
+  const post = req.body;
+  post.filenames = req.files;
 
-  if (!req.body.address) {
-    req.body.address = '';
+  if (req.files.length === 0) {
+    const err = httpError('Invalid file', 400);
+    next(err);
+    return;
   }
 
-  if (req.body.freeOrNot === 'free') {
-    req.body.price = 0.0;
+  if (!post.address) {
+    post.address = '';
   }
 
-  req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
-  console.log(req.body);
-  const updated = await updatePost(req.body);
-  res.json({ message: `Post updated: ${updated}` });
+  if (post.freeOrNot === 'free') {
+    post.price = 0.0;
+  }
+  post.postId = req.params.postId;
+  post.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  try {
+    const updated = await updatePost(post, next);
+    res.json({ message: `Post updated: ${updated}` });
+  } catch (e) {
+    const err = httpError('Error updating post', 400);
+    next(err);
+    return;
+  }
 };
 
 module.exports = {
