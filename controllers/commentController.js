@@ -39,8 +39,8 @@ const comment_get = async (req, res, next) => {
 const comment_post = async (req, res, next) => {
   try {
     const comment = req.body;
-    console.log('comment', req.body);
-    const id = await insertComment(req.params.postId, comment);
+    console.log('comment', req.body, req.params.postId);
+    const id = await insertComment(req.params.postId, comment, next);
     res.json({ message: `A comment created with id ${id}`, comment_id: id });
   } catch (e) {
     const err = httpError('Error uploading comment', 400);
