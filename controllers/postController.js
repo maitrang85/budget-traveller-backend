@@ -1,6 +1,10 @@
 'use strict';
 
+require('dotenv').config();
 const moment = require('moment');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 const {
   getAllPosts,
@@ -11,6 +15,7 @@ const {
 } = require('../models/postModel');
 
 const { httpError } = require('../utils/errors');
+const { getCoordinates } = require('../utils/imageMeta');
 
 const post_list_get = async (req, res, next) => {
   const posts = await getAllPosts();
@@ -38,9 +43,10 @@ const post_get = async (req, res, next) => {
 
 const post_post = async (req, res, next) => {
   const post = req.body;
-  post.filenames = req.files;
+  post.filename = req.file.filename;
+  console.log('post body', post);
 
-  if (req.files.length === 0) {
+  if (!post.filename) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
@@ -52,6 +58,16 @@ const post_post = async (req, res, next) => {
 
   if (post.freeOrNot === 'free') {
     post.price = 0.0;
+  }
+
+  try {
+    const coords = await getCoordinates(req.file.path);
+    post.coords = JSON.stringify(coords);
+    console.log('coords of img', coords);
+  } catch {
+    post.coords = JSON.stringify(
+      await getGeoDataFromMapBox(post.address, post.regionId)
+    );
   }
 
   try {
@@ -78,12 +94,23 @@ const post_delete = async (req, res, next) => {
 
 const post_update = async (req, res, next) => {
   const post = req.body;
-  post.filenames = req.files;
+  post.filename = req.file.filename;
 
-  if (req.files.length === 0) {
+  console.log('post at upadate', post);
+  if (!post.filename) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
+  }
+
+  try {
+    const coords = await getCoordinates(req.file.path);
+    post.coords = JSON.stringify(coords);
+    console.log('coords of img', coords);
+  } catch {
+    post.coords = JSON.stringify(
+      await getGeoDataFromMapBox(post.address, post.regionId)
+    );
   }
 
   if (!post.address) {
@@ -93,6 +120,7 @@ const post_update = async (req, res, next) => {
   if (post.freeOrNot === 'free') {
     post.price = 0.0;
   }
+
   post.postId = req.params.postId;
   post.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
   try {
@@ -103,6 +131,21 @@ const post_update = async (req, res, next) => {
     next(err);
     return;
   }
+};
+
+const getGeoDataFromMapBox = async (address, regionId) => {
+  const geoData = await geocoder
+    .forwardGeocode({
+      query: `${address}, Finland` || `${regionId}, Finland`,
+      limit: 1,
+    })
+    .send();
+  const coords = [
+    geoData.body.features[0].geometry.coordinates[1],
+    geoData.body.features[0].geometry.coordinates[0],
+  ];
+  console.log('Coordinate', coords);
+  return coords;
 };
 
 module.exports = {

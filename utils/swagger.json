@@ -1,0 +1,1007 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Budget Traveler Web App",
+    "description": "API documentation for Budget Traveler Web App",
+    "version": "1.0.0",
+    "contact": {
+      "name": "admin",
+      "email": "admin@metropolia.fi"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local environment"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Post endpoints"
+    },
+    {
+      "name": "User endpoints"
+    },
+    {
+      "name": "Comment endpoints"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "testResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Pong"
+          }
+        }
+      },
+      "licenseResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "licenseId": {
+              "type": "integer",
+              "example": "1234567"
+            },
+            "email": {
+              "type": "string",
+              "example": "@qt.io"
+            },
+            "expiryDate": {
+              "type": "date",
+              "description": "Expiry date of this v2 license",
+              "example": "2021-10-01"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of this license",
+              "example": "Qt DCE - Site license"
+            },
+            "productCode": {
+              "type": "string",
+              "description": "Product code that is associated with this license",
+              "example": "8342 - SITE"
+            },
+            "licenseKeys": {
+              "type": "object",
+              "description": "This license qt4 and qt5 encoded keys",
+              "properties": {
+                "qt4": {
+                  "type": "string",
+                  "example": "YGKMP9-XTL-F4M-2CX-RNA9H-LBVV7-AAAA"
+                },
+                "qt5": {
+                  "type": "string",
+                  "example": "YGKMP9-XTL-F4M-2CX-RNA9H-LBVV7-BBBB"
+                }
+              }
+            },
+            "licenseSchema": {
+              "type": "array",
+              "description": "The license schema, being commercial or evaluation etc.",
+              "items": {
+                "type": "string",
+                "example": "Full Commercial"
+              }
+            },
+            "features": {
+              "type": "array",
+              "description": "The features this license has, e.g. being a term-based or subscription-based among other things",
+              "items": {
+                "type": "string",
+                "example": "Subscription, Qt6 Eligible, Site License"
+              }
+            },
+            "platforms": {
+              "type": "array",
+              "description": "The platforms eligible for this license",
+              "items": {
+                "type": "string",
+                "example": "'Android', 'iOS', 'Windows', 'macOS', 'Linux, X11'"
+              }
+            },
+            "products": {
+              "type": "array",
+              "description": "The product this license represents",
+              "items": {
+                "type": "string",
+                "example": "Qt for Device Creation Enterprise"
+              }
+            },
+            "verify_email_message__c": {
+              "type": "string",
+              "description": "This message to return to online installer client when user email is not verified yet",
+              "example": "Email Verification Required..."
+            }
+          }
+        }
+      },
+      "proxyLicenseResponse": {
+        "type": "array",
+        "description": "An array of license entitlement data as response back to proxy, where each license data block matches one api key provided.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "license_number__c": {
+              "type": "string",
+              "example": "1234567"
+            },
+            "sfid": {
+              "type": "string",
+              "example": "a4m0v0000007g755XYZ"
+            },
+            "lease_time_days__c": {
+              "type": "integer",
+              "example": 30
+            },
+            "maximum_users_overage__c": {
+              "type": "integer",
+              "example": 200
+            },
+            "concurrent_users__c": {
+              "type": "integer",
+              "example": 100
+            },
+            "email_domain__c": {
+              "type": "string",
+              "example": "@qt.io"
+            },
+            "expiry_date__c": {
+              "type": "date",
+              "description": "Expiry date of this site license",
+              "example": "2021-10-01"
+            },
+            "is_active__c": {
+              "type": "boolean",
+              "example": true
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of this license",
+              "example": "Qt DCE - Site license"
+            },
+            "product_code__c": {
+              "type": "string",
+              "description": "Product code that is associated with this license",
+              "example": "8342 - SITE"
+            },
+            "qt4_license_key__c": {
+              "type": "string",
+              "example": "YGKMP9-XTL-F4M-2CX-RNA9H-LBVV7-AAAA"
+            },
+            "qt5_license_key__c": {
+              "type": "string",
+              "example": "YGKMP9-XTL-F4M-2CX-RNA9H-LBVV7-BBBB"
+            },
+            "schema__c": {
+              "type": "string",
+              "example": "Full Commercial"
+            },
+            "features__c": {
+              "type": "string",
+              "example": "Subscription;Qt6 Eligible;Site License"
+            },
+            "platforms__c": {
+              "type": "string",
+              "example": "Android;iOS;Windows;macOS;Linux, X11"
+            },
+            "product__c": {
+              "type": "string",
+              "example": "Qt for Device Creation Enterprise"
+            }
+          }
+        }
+      },
+      "reservationPayloadCloudSetting": {
+        "type": "object",
+        "properties": {
+          "license_number": {
+            "description": "License number which is used to identify the site license v2",
+            "type": "string",
+            "required": true,
+            "example": "10612076"
+          },
+          "hw_id": {
+            "description": "Hardware ID of the device requesting license reservation",
+            "type": "string",
+            "required": true,
+            "example": "c31aa37762ef3bb84e09eeea0bc9bccb6b96a81b2657b1a356ec51709975a5ea"
+          },
+          "tool": {
+            "description": "Name of the client tool requesting reservation",
+            "type": "string",
+            "required": true,
+            "example": "Qt Creator"
+          },
+          "os_version": {
+            "description": "Name of the OS version on user device",
+            "type": "string",
+            "required": true,
+            "example": "Windows 8.1"
+          }
+        }
+      },
+      "reservationPayloadProxySetting": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "description": "Qt5 license key which is used to identify the site license v2",
+            "type": "string",
+            "required": true,
+            "example": "FFF-EEE-DD1-C2C-TQA9H-BB9BB-AAAA"
+          },
+          "hw_id": {
+            "description": "Hardware ID of the device requesting license reservation",
+            "type": "string",
+            "required": true,
+            "example": "c31aa37762ef3bb84e09eeea0bc9bccb6b96a81b2657b1a356ec51709975a5ea"
+          },
+          "tool": {
+            "description": "Name of the client tool requesting reservation",
+            "type": "string",
+            "required": true,
+            "example": "Qt Creator || Offline installer"
+          },
+          "os_version": {
+            "description": "Name of the OS version on user device",
+            "type": "string",
+            "required": true,
+            "example": "Windows 8.1"
+          },
+          "email": {
+            "description": "User email to associate with reservation request or installation event",
+            "type": "string",
+            "required": false,
+            "example": "foobar@qt.io"
+          },
+          "operation": {
+            "description": "Operation type of the request. Currently used by offline installer to notify an installation event.",
+            "type": "string",
+            "required": false,
+            "example": "install"
+          }
+        }
+      },
+      "reservationSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Reservation created/extended successfully"
+          },
+          "reservation": {
+            "type": "object",
+            "properties": {
+              "reservation_id": {
+                "type": "string",
+                "description": "Unique ID of the reservation as UIID v4",
+                "example": "FC9F5A7A-0A04-4F5B-803D-A651C4DA9EA5"
+              },
+              "license_number": {
+                "type": "string",
+                "description": "The license number/id that the reservation belongs to",
+                "example": "1234567"
+              },
+              "email": {
+                "type": "string",
+                "description": "User email associated with this reservation. Can be undefined in case of no email",
+                "example": "foobar@qt.io || null"
+              },
+              "hardware_id": {
+                "type": "string",
+                "description": "Hardware ID of the device requesting license reservation. Can be used as identity substitute for email",
+                "example": "null || c31aa37762ef3bb84e09eeea0bc9bccb6b96a81b2657b1a356ec51709975a5ea"
+              },
+              "expiry_date": {
+                "type": "date",
+                "description": "The last day until which the reservation in question is valid",
+                "example": "2021-10-01"
+              },
+              "license_key": {
+                "type": "string",
+                "description": "Qt5 license key which is used to identify the site license v2",
+                "example": "FFF-EEE-DD1-C2C-TQA9H-BB9BB-AAAA"
+              }
+            }
+          }
+        }
+      },
+      "reservationLicenseErrorResponses": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "License fully reserved | License not found | License inactive | License expired"
+          },
+          "reservation": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      },
+      "installationCheckSuccessResponse": {
+        "type": "object",
+        "description": "Server response indicating license check from proxy local DB with provided license key has succeeded. Offline installer can proceed to installation.",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "License valid. Installation can proceed."
+          }
+        }
+      },
+      "installationCheckFailureResponse": {
+        "type": "object",
+        "description": "Server response indicating license check from proxy local DB with provided license key did not pass. Offline installer should block installation.",
+        "properties": {
+          "status": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "No valid license. Installation should not proceed. | Found license is inactive. Installation should not proceed. | Found license has expired. Installation should not proceed."
+          }
+        }
+      },
+      "internalServerError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Internal server error"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "unauthorizedError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not authorized"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "proxyLicenseError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Missing api key | Invalid api key"
+          },
+          "status": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/post": {
+      "get": {
+        "tags": ["Post endpoints"],
+        "description": "Get all posts",
+        "responses": {
+          "200": {
+            "description": "Server response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "post_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "Campsite in Nuuksio"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "Karaportti 2"
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "A nice place for a getaway weekend"
+                      },
+                      "regionId": {
+                        "type": "string",
+                        "enum": [
+                          "Finland",
+                          "Ahvenanmaa",
+                          "Etelä-Karjala",
+                          "Etelä-Pohjanmaa",
+                          "Etelä-Savo",
+                          "Kainuu",
+                          "Kanta-Häme",
+                          "Keski-Pohjanmaa",
+                          "Keski-Suomi",
+                          "Kymenlaakso",
+                          "Lappi",
+                          "Pirkanmaa",
+                          "Pohjanmaa",
+                          "Pohjois-Karjala",
+                          "Pohjois-Pohjanmaa",
+                          "Pohjois-Savo",
+                          "Päijät-Häme",
+                          "Satakunta",
+                          "Uusimaa",
+                          "Varsinais-Suomi"
+                        ]
+                      },
+                      "created_date": {
+                        "type": "string",
+                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                        "example": "2021-12-04 20:49:26"
+                      },
+                      "edited_date": {
+                        "type": "string",
+                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                        "example": "2021-12-04 20:49:26"
+                      },
+                      "free_or_not": {
+                        "type": "string",
+                        "enum": ["free", "paid"]
+                      },
+                      "price": {
+                        "type": "integer",
+                        "format": "float",
+                        "example": "25.00"
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "image_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "filename": {
+                        "type": "string",
+                        "example": "97b439006ad80c172419ce51354b06b1"
+                      },
+                      "geolocation": {
+                        "type": "string",
+                        "example": ""
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "camper1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Post endpoints"],
+        "description": "Insert a post",
+        "requestBody": {
+          "required": "true",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "regionId": {
+                    "type": "string",
+                    "enum": [
+                      "Finland",
+                      "Ahvenanmaa",
+                      "Etelä-Karjala",
+                      "Etelä-Pohjanmaa",
+                      "Etelä-Savo",
+                      "Kainuu",
+                      "Kanta-Häme",
+                      "Keski-Pohjanmaa",
+                      "Keski-Suomi",
+                      "Kymenlaakso",
+                      "Lappi",
+                      "Pirkanmaa",
+                      "Pohjanmaa",
+                      "Pohjois-Karjala",
+                      "Pohjois-Pohjanmaa",
+                      "Pohjois-Savo",
+                      "Päijät-Häme",
+                      "Satakunta",
+                      "Uusimaa",
+                      "Varsinais-Suomi"
+                    ]
+                  },
+                  "freeOrNot": {
+                    "type": "string",
+                    "enum": ["free", "paid"]
+                  },
+                  "price": {
+                    "type": "integer",
+                    "format": "float"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "photos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "photos": {
+                  "contentType": "image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "A post created with id 24"
+                    },
+                    "post_id": {
+                      "type": "integer",
+                      "example": "24"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{postId}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the post to get"
+          }
+        ],
+        "tags": ["Post endpoints"],
+        "description": "API endpoint for getting a specific post",
+        "responses": {
+          "200": {
+            "description": "Server response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "post_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "title": {
+                        "type": "string",
+                        "example": "Campsite in Nuuksio"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "Karaportti 2"
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "A nice place for a getaway weekend"
+                      },
+                      "regionId": {
+                        "type": "string",
+                        "enum": [
+                          "Finland",
+                          "Ahvenanmaa",
+                          "Etelä-Karjala",
+                          "Etelä-Pohjanmaa",
+                          "Etelä-Savo",
+                          "Kainuu",
+                          "Kanta-Häme",
+                          "Keski-Pohjanmaa",
+                          "Keski-Suomi",
+                          "Kymenlaakso",
+                          "Lappi",
+                          "Pirkanmaa",
+                          "Pohjanmaa",
+                          "Pohjois-Karjala",
+                          "Pohjois-Pohjanmaa",
+                          "Pohjois-Savo",
+                          "Päijät-Häme",
+                          "Satakunta",
+                          "Uusimaa",
+                          "Varsinais-Suomi"
+                        ]
+                      },
+                      "created_date": {
+                        "type": "string",
+                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                        "example": "2021-12-04 20:49:26"
+                      },
+                      "edited_date": {
+                        "type": "string",
+                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                        "example": "2021-12-04 20:49:26"
+                      },
+                      "free_or_not": {
+                        "type": "string",
+                        "enum": ["free", "paid"]
+                      },
+                      "price": {
+                        "type": "integer",
+                        "format": "float",
+                        "example": "25.00"
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "image_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "filename": {
+                        "type": "string",
+                        "example": "97b439006ad80c172419ce51354b06b1"
+                      },
+                      "geolocation": {
+                        "type": "string",
+                        "example": ""
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "camper1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Post": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "JWT token from Qt Login for an authenticated user as bearer token",
+            "required": true
+          }
+        ],
+        "tags": ["Cloud-specific endpoints"],
+        "description": "API endpoint to get all valid v2 licenses for a user",
+        "responses": {
+          "200": {
+            "description": "An array of site licenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/licenseResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized/Invalid JWT error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/reservations": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "JWT token from Qt Login for an authenticated user as bearer token",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/reservationPayloadCloudSetting"
+              }
+            }
+          }
+        },
+        "tags": ["Common endpoints"],
+        "description": "API endpoint for client tools to ask for new license reservation, or extending current active one",
+        "responses": {
+          "200": {
+            "description": "Server response object indicating success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/reservationSuccessResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/reservationLicenseErrorResponses"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid email || Missing license number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized/Invalid JWT error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unauthorizedError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/reservations(PROXY/LOCAL SERVER)": {
+      "post": {
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "The APIKEY auth scheme is used in the request to proxy reservation endpoints for license reservation or offline installer checking. The scheme value is calculated as a HMAC with sha256 algorithm using a shared secret and the JSON stringified version of request body of the HTTP request.",
+            "required": true,
+            "example": "apikey 8f228fe44caab8497fe8af2b451490d7b9ec27a927fa1ba7dea7de1265483b9c"
+          }
+        ],
+        "requestBody": {
+          "description": "To specify an 'installation' event, provide operation type of 'install' in request body as part of endpoint payload. If no operation 'install' specified, requests to the endpoint will handle license seat reservations from provided payload.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/reservationPayloadProxySetting"
+              }
+            }
+          }
+        },
+        "tags": ["Common endpoints"],
+        "description": "When run as proxy/local server setting, this API endpoint is for client tools to reserve license seats, or offline installer to perform a simple check before new installation.",
+        "responses": {
+          "200": {
+            "description": "Depending on whether operation 'install' specified or not, server will return either responses about installation allowance OR license seat reservation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/reservationSuccessResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/reservationLicenseErrorResponses"
+                    },
+                    {
+                      "$ref": "#/components/schemas/installationCheckSuccessResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/installationCheckFailureResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid license key || Invalid email || Missing license key || Invalid api key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/proxies/entitlements": {
+      "get": {
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "api_keys",
+            "description": "API key(s) to authenticate proxy for the endpoint usage. Provided in request query as single api key (string) or multiple keys (string array)",
+            "required": true
+          }
+        ],
+        "tags": ["Cloud-specific endpoints"],
+        "description": "API endpoint for proxy server to fetch license entitlement data",
+        "responses": {
+          "200": {
+            "description": "Site license entitlement data to be returned to proxies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/proxyLicenseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/proxyLicenseError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/internalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
