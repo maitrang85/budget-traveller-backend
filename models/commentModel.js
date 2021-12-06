@@ -12,7 +12,8 @@ const getAllComments = async (postId, next) => {
     );
     return rows;
   } catch (e) {
-    const err = httpError('SQL getAllComments error', 500);
+    console.error('Model getAllComments ', e.message);
+    const err = httpError('SQL getAllComments model error', 500);
     next(err);
   }
 };
@@ -25,7 +26,8 @@ const getComment = async (commentId, next) => {
     );
     return rows[0];
   } catch (e) {
-    const err = httpError('SQL getComment error', 500);
+    console.error('Model getComment ', e.message);
+    const err = httpError('SQL getComment model error', 500);
     next(err);
   }
 };
@@ -38,6 +40,7 @@ const insertComment = async (postId, comment, next) => {
     );
     return rows.insertId;
   } catch (e) {
+    console.error('Model insertComment', e.message);
     const err = httpError('Cannot insert comment', 500);
     next(err);
   }
@@ -51,12 +54,13 @@ const deleteComment = async (commentId, next) => {
     );
     return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model deleteComment ', e.message);
     const err = httpError('Cannot delete comment', 500);
     next(err);
   }
 };
 
-const updateComment = async (comment, next) => {
+const updateComment = async (comment) => {
   try {
     const [rows] = await promisePool.execute(
       'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?',
@@ -64,6 +68,7 @@ const updateComment = async (comment, next) => {
     );
     return rows.affectedRows === 1;
   } catch (e) {
+    console.error('Model updateComment ', e.message);
     const err = httpError('Cannot insert comment', 500);
     next(err);
   }

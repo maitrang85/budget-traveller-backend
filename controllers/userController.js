@@ -37,7 +37,7 @@ const user_get = async (req, res, next) => {
 const user_post = async (req, res, next) => {
   try {
     const user = req.body;
-    const id = await insertUser(user);
+    const id = await insertUser(user, next);
     res.json({ message: `A user created with id ${id}`, user_id: id });
   } catch (e) {
     const err = httpError('Error uploading user', 400);
@@ -46,17 +46,27 @@ const user_post = async (req, res, next) => {
   }
 };
 
-const user_delete = async (req, res) => {
-  const deleted = await deleteUser(req.params.userId);
-
-  res.json({ message: `User deleted: ${deleted} ` });
+const user_delete = async (req, res, next) => {
+  try {
+    const deleted = await deleteUser(req.params.userId, next);
+    res.json({ message: `User deleted: ${deleted} ` });
+  } catch (e) {
+    const err = httpError('Error deleting user', 400);
+    next(err);
+    return;
+  }
 };
 
-const user_update = async (req, res) => {
-  req.body.userId = req.params.userId;
-
-  const updated = await updateUser(req.body);
-  res.json({ message: `User updated: ${updated}` });
+const user_update = async (req, res, next) => {
+  try {
+    req.body.userId = req.params.userId;
+    const updated = await updateUser(req.body, next);
+    res.json({ message: `User updated: ${updated}` });
+  } catch (e) {
+    const err = httpError('Error updating user', 400);
+    next(err);
+    return;
+  }
 };
 
 module.exports = {

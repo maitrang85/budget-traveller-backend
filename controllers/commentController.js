@@ -39,7 +39,7 @@ const comment_get = async (req, res, next) => {
 const comment_post = async (req, res, next) => {
   try {
     const comment = req.body;
-    console.log('comment', req.body, req.params.postId);
+    console.log('comment', req.body);
     const id = await insertComment(req.params.postId, comment, next);
     res.json({ message: `A comment created with id ${id}`, comment_id: id });
   } catch (e) {
@@ -49,18 +49,28 @@ const comment_post = async (req, res, next) => {
   }
 };
 
-const comment_delete = async (req, res) => {
-  const deleted = await deleteComment(req.params.commentId);
-
-  res.json({ message: `Comment deleted: ${deleted} ` });
+const comment_delete = async (req, res, next) => {
+  try {
+    const deleted = await deleteComment(req.params.commentId, next);
+    res.json({ message: `Comment deleted: ${deleted} ` });
+  } catch (e) {
+    const err = httpError('Error deleting comment', 400);
+    next(err);
+    return;
+  }
 };
 
-const comment_update = async (req, res) => {
-  req.body.commentId = req.params.commentId;
-  req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
-
-  const updated = await updateComment(req.body);
-  res.json({ message: `Comment updated: ${updated}` });
+const comment_update = async (req, res, next) => {
+  try {
+    req.body.commentId = req.params.commentId;
+    req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+    const updated = await updateComment(req.body, next);
+    res.json({ message: `Comment updated: ${updated}` });
+  } catch (e) {
+    const err = httpError('Error updating comment', 400);
+    next(err);
+    return;
+  }
 };
 
 module.exports = {
