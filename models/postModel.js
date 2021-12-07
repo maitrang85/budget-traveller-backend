@@ -64,12 +64,17 @@ const insertPost = async (post, next) => {
   }
 };
 
-const deletePost = async (postId, next) => {
+const deletePost = async (postId, user_id, role, next) => {
+  let sql = 'DELETE FROM camping_site WHERE post_id = ? AND user_id = ?;';
+  let params = [postId, user_id];
+
+  if (role === 0) {
+    sql = 'DELETE FROM camping_site WHERE post_id = ?;';
+    params = [postId];
+  }
+
   try {
-    const [rows] = await promisePool.execute(
-      'DELETE FROM camping_site WHERE post_id = ?',
-      [postId]
-    );
+    const [rows] = await promisePool.execute(sql, params);
     return rows.affectedRows === 1;
   } catch (e) {
     console.error('Model deletePost ', e.message);
@@ -78,25 +83,43 @@ const deletePost = async (postId, next) => {
   }
 };
 
-const updatePost = async (post, next) => {
-  try {
-    const [rows] = await promisePool.execute(
-      'UPDATE camping_site SET title = ?, address =?, coords = ?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, filename = ?, user_id = ? WHERE post_id = ?',
-      [
-        post.title,
-        post.address,
-        post.coords,
-        post.content,
-        post.regionId,
-        post.editedDate,
-        post.freeOrNot,
-        post.price,
-        post.filename,
-        post.userId,
-        post.postId,
-      ]
-    );
+const updatePost = async (post, user, next) => {
+  let sql =
+    'UPDATE camping_site SET title = ?, address =?, coords = ?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, filename = ?  WHERE post_id = ? AND user_id = ?;';
+  let params = [
+    post.title,
+    post.address,
+    post.coords,
+    post.content,
+    post.regionId,
+    post.editedDate,
+    post.freeOrNot,
+    post.price,
+    post.filename,
+    post.postId,
+    user.user_id,
+  ];
 
+  if (user.role === 0) {
+    sql =
+      'UPDATE camping_site SET title = ?, address =?, coords = ?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, filename = ?, user_id = ?  WHERE post_id = ?;';
+    params = [
+      post.title,
+      post.address,
+      post.coords,
+      post.content,
+      post.regionId,
+      post.editedDate,
+      post.freeOrNot,
+      post.price,
+      post.filename,
+      post.userId,
+      post.postId,
+    ];
+  }
+
+  try {
+    const [rows] = await promisePool.execute(sql, params);
     return rows.affectedRows === 1;
   } catch (e) {
     console.error('Model updatePost ', e.message);

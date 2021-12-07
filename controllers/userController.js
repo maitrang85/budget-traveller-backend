@@ -48,7 +48,7 @@ const user_post = async (req, res, next) => {
 
 const user_delete = async (req, res, next) => {
   try {
-    const deleted = await deleteUser(req.params.userId, next);
+    const deleted = await deleteUser(req.params.userId, req.user, next);
     res.json({ message: `User deleted: ${deleted} ` });
   } catch (e) {
     const err = httpError('Error deleting user', 400);
@@ -60,7 +60,9 @@ const user_delete = async (req, res, next) => {
 const user_update = async (req, res, next) => {
   try {
     req.body.userId = req.params.userId;
-    const updated = await updateUser(req.body, next);
+    console.log('req body', req.body);
+    console.log('req user', req.user);
+    const updated = await updateUser(req.body, req.user, next);
     res.json({ message: `User updated: ${updated}` });
   } catch (e) {
     const err = httpError('Error updating user', 400);

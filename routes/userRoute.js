@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const passport = require('../utils/pass');
 
 const {
   user_list_get,
@@ -13,6 +14,10 @@ const {
 const router = express.Router();
 
 router.route('/').get(user_list_get).post(user_post);
-router.route('/:userId').get(user_get).delete(user_delete).put(user_update);
+router
+  .route('/:userId')
+  .get(user_get)
+  .delete(passport.authenticate('jwt', { session: false }), user_delete)
+  .put(passport.authenticate('jwt', { session: false }), user_update);
 
 module.exports = router;
