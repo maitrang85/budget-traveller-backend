@@ -16,6 +16,7 @@ const {
 
 const { httpError } = require('../utils/errors');
 const { getCoordinates } = require('../utils/imageMeta');
+const { makeThumbnail } = require('../utils/resize');
 
 const post_list_get = async (req, res, next) => {
   const posts = await getAllPosts();
@@ -69,11 +70,16 @@ const post_post = async (req, res, next) => {
     post.coords = JSON.stringify(
       await getGeoDataFromMapBox(post.address, post.regionId)
     );
+    console.log('post.coords', post.coords);
   }
+
+  const thumb = makeThumbnail(req.file.path, post.filename);
 
   try {
     const id = await insertPost(post, next);
-    res.json({ message: `A post created with id ${id}`, post_id: id });
+    if (thumb) {
+      res.json({ message: `A post created with id ${id}`, post_id: id });
+    }
   } catch (e) {
     console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
@@ -120,6 +126,7 @@ const post_update = async (req, res, next) => {
     post.coords = JSON.stringify(
       await getGeoDataFromMapBox(post.address, post.regionId)
     );
+    console.log('post.coords', post.coords);
   }
 
   if (!post.address) {
@@ -132,9 +139,14 @@ const post_update = async (req, res, next) => {
 
   post.postId = req.params.postId;
   post.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+
+  const thumb = makeThumbnail(req.file.path, post.filename);
+
   try {
     const updated = await updatePost(post, req.user, next);
-    res.json({ message: `Post updated: ${updated}` });
+    if (thumb) {
+      res.json({ message: `Post updated: ${updated}` });
+    }
   } catch (e) {
     const err = httpError('Error updating post', 400);
     next(err);
