@@ -32,11 +32,11 @@ const getComment = async (commentId, next) => {
   }
 };
 
-const insertComment = async (postId, comment, next) => {
+const insertComment = async (comment, next) => {
   try {
     const [rows] = await promisePool.query(
       'INSERT INTO camping_comment(content, user_id, post_id) VALUES (?, ?, ?)',
-      [comment.content, comment.userId, postId]
+      [comment.content, comment.userId, comment.postId]
     );
     return rows.insertId;
   } catch (e) {
@@ -46,12 +46,17 @@ const insertComment = async (postId, comment, next) => {
   }
 };
 
-const deleteComment = async (commentId, next) => {
+const deleteComment = async (commentId, userId, role, next) => {
+  let sql = 'DELETE FROM camping_comment WHERE comment_id = ? AND user_id = ?;';
+  let params = [commentId, userId];
+
+  if (role === 0) {
+    sql = 'DELETE FROM camping_comment WHERE comment_id = ?;';
+    params = [commentId];
+  }
+
   try {
-    const [rows] = await promisePool.execute(
-      'DELETE FROM camping_comment WHERE comment_id = ?',
-      [commentId]
-    );
+    const [rows] = await promisePool.execute(sql, params);
     return rows.affectedRows === 1;
   } catch (e) {
     console.error('Model deleteComment ', e.message);
@@ -60,12 +65,29 @@ const deleteComment = async (commentId, next) => {
   }
 };
 
-const updateComment = async (comment) => {
+const updateComment = async (comment, user, next) => {
+  let sql =
+    'UPDATE camping_comment SET content = ?, edited_date = ? WHERE comment_id = ? AND user_id = ?;';
+  let params = [
+    comment.content,
+    comment.editedDate,
+    comment.commentId,
+    user.user_id,
+  ];
+
+  if (user.role === 0) {
+    sql =
+      'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?;';
+    params = [
+      comment.content,
+      comment.editedDate,
+      comment.userId,
+      comment.commentId,
+    ];
+  }
+
   try {
-    const [rows] = await promisePool.execute(
-      'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?',
-      [comment.content, comment.editedDate, comment.userId, comment.commentId]
-    );
+    const [rows] = await promisePool.execute(sql, params);
     return rows.affectedRows === 1;
   } catch (e) {
     console.error('Model updateComment ', e.message);

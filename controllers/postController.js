@@ -44,6 +44,7 @@ const post_get = async (req, res, next) => {
 const post_post = async (req, res, next) => {
   const post = req.body;
   post.filename = req.file.filename;
+  post.userId = req.user.user_id;
   console.log('post body', post);
 
   if (!post.filename) {
@@ -83,7 +84,12 @@ const post_post = async (req, res, next) => {
 
 const post_delete = async (req, res, next) => {
   try {
-    const deleted = await deletePost(req.params.postId, next);
+    const deleted = await deletePost(
+      req.params.postId,
+      req.user.user_id,
+      req.user.role,
+      next
+    );
     res.json({ message: `Post deleted: ${deleted} ` });
   } catch (e) {
     const err = httpError('Error deleting post', 400);
@@ -95,6 +101,9 @@ const post_delete = async (req, res, next) => {
 const post_update = async (req, res, next) => {
   const post = req.body;
   post.filename = req.file.filename;
+  post.postId = req.params.postId;
+  /* post.userId = req.user.user_id; */
+  /* post.role = req.user.role; */
 
   console.log('post at upadate', post);
   if (!post.filename) {
@@ -124,7 +133,7 @@ const post_update = async (req, res, next) => {
   post.postId = req.params.postId;
   post.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
   try {
-    const updated = await updatePost(post, next);
+    const updated = await updatePost(post, req.user, next);
     res.json({ message: `Post updated: ${updated}` });
   } catch (e) {
     const err = httpError('Error updating post', 400);
@@ -134,18 +143,29 @@ const post_update = async (req, res, next) => {
 };
 
 const getGeoDataFromMapBox = async (address, regionId) => {
-  const geoData = await geocoder
-    .forwardGeocode({
-      query: `${address}, Finland` || `${regionId}, Finland`,
-      limit: 1,
-    })
-    .send();
-  const coords = [
-    geoData.body.features[0].geometry.coordinates[1],
-    geoData.body.features[0].geometry.coordinates[0],
-  ];
-  console.log('Coordinate', coords);
-  return coords;
+  try {
+    let mapboxQuery = '';
+    if (address) {
+      mapboxQuery = `${address}, Finland`;
+    } else {
+      mapboxQuery = `${regionId}, Finland`;
+    }
+
+    const geoData = await geocoder
+      .forwardGeocode({
+        query: `${mapboxQuery}`,
+        limit: 1,
+      })
+      .send();
+    const coords = [
+      geoData.body.features[0].geometry.coordinates[1],
+      geoData.body.features[0].geometry.coordinates[0],
+    ];
+    console.log('Coordinate in getGeoDataFromMapBox', coords);
+    return coords;
+  } catch (error) {
+    console.log('Error in getGeoDateFromMapBox', error);
+  }
 };
 
 module.exports = {

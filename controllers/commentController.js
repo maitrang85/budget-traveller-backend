@@ -39,8 +39,10 @@ const comment_get = async (req, res, next) => {
 const comment_post = async (req, res, next) => {
   try {
     const comment = req.body;
+    comment.userId = req.user.user_id;
+    comment.postId = req.params.postId;
     console.log('comment', req.body);
-    const id = await insertComment(req.params.postId, comment, next);
+    const id = await insertComment(comment, next);
     res.json({ message: `A comment created with id ${id}`, comment_id: id });
   } catch (e) {
     const err = httpError('Error uploading comment', 400);
@@ -51,7 +53,12 @@ const comment_post = async (req, res, next) => {
 
 const comment_delete = async (req, res, next) => {
   try {
-    const deleted = await deleteComment(req.params.commentId, next);
+    const deleted = await deleteComment(
+      req.params.commentId,
+      req.user.user_id,
+      req.user.role,
+      next
+    );
     res.json({ message: `Comment deleted: ${deleted} ` });
   } catch (e) {
     const err = httpError('Error deleting comment', 400);
@@ -62,9 +69,12 @@ const comment_delete = async (req, res, next) => {
 
 const comment_update = async (req, res, next) => {
   try {
-    req.body.commentId = req.params.commentId;
-    req.body.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
-    const updated = await updateComment(req.body, next);
+    const comment = req.body;
+    comment.commentId = req.params.commentId;
+    comment.postId = req.params.postId;
+    comment.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    const updated = await updateComment(comment, req.user, next);
     res.json({ message: `Comment updated: ${updated}` });
   } catch (e) {
     const err = httpError('Error updating comment', 400);

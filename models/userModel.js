@@ -4,10 +4,25 @@ const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
 
+const getUserLogin = async (params, next) => {
+  try {
+    console.log(params);
+    const [rows] = await promisePool.execute(
+      'SELECT * FROM camping_user WHERE email = ?;',
+      params
+    );
+    return rows;
+  } catch (e) {
+    console.log('error', e.message);
+    const err = httpError('Error in getUserLogin model', 500);
+    next(err);
+  }
+};
+
 const getAllUsers = async (next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT user_id, username, email, role FROM camping_user'
+      'SELECT user_id, username, email, role FROM camping_user;'
     );
     return rows;
   } catch (e) {
@@ -20,7 +35,7 @@ const getAllUsers = async (next) => {
 const getUser = async (userId, next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT user_id, username, email, role FROM camping_user WHERE user_id = ?',
+      'SELECT user_id, username, email, role FROM camping_user WHERE user_id = ?;',
       [userId]
     );
     return rows[0];
@@ -34,7 +49,7 @@ const getUser = async (userId, next) => {
 const insertUser = async (user, next) => {
   try {
     const [rows] = await promisePool.query(
-      'INSERT INTO `camping_user`(`username`, `email`, `password`) VALUES (?, ?, ?)',
+      'INSERT INTO `camping_user`(`username`, `email`, `password`) VALUES (?, ?, ?);',
       [user.username, user.email, user.password]
     );
     return rows.insertId;
@@ -45,11 +60,17 @@ const insertUser = async (user, next) => {
   }
 };
 
-const deleteUser = async (userId, next) => {
+const deleteUser = async (userId, requestUser, next) => {
+  let params = [userId];
+
+  if (requestUser.user_id != userId && requestUser.role !== 0) {
+    params = [0];
+  }
+
   try {
     const [rows] = await promisePool.execute(
-      'DELETE FROM camping_user WHERE user_id = ?',
-      [userId]
+      'DELETE FROM camping_user WHERE user_id = ?;',
+      params
     );
     return rows.affectedRows === 1;
   } catch (e) {
@@ -59,12 +80,17 @@ const deleteUser = async (userId, next) => {
   }
 };
 
-const updateUser = async (user, next) => {
-  console.log(user);
+const updateUser = async (user, requestUser, next) => {
+  let params = [user.username, user.email, user.password, requestUser.user_id];
+
+  if (requestUser.role === 0) {
+    params = [user.username, user.email, user.password, user.userId];
+  }
+
   try {
     const [rows] = await promisePool.query(
-      'UPDATE camping_user SET username = ?, email = ?, password = ? WHERE user_id = ?',
-      [user.username, user.email, user.password, user.userId]
+      'UPDATE camping_user SET username = ?, email = ?, password = ? WHERE user_id = ?;',
+      params
     );
     return rows.affectedRows === 1;
   } catch (e) {
@@ -75,6 +101,7 @@ const updateUser = async (user, next) => {
 };
 
 module.exports = {
+  getUserLogin,
   getAllUsers,
   getUser,
   insertUser,

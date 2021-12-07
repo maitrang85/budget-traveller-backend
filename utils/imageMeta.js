@@ -9,12 +9,13 @@ const getCoordinates = (imgFile) => {
       // coordinates below should be an array of GPS coordinates in decimal format: [longitude, latitude]
       new ExifImage({ image: imgFile }, (error, exifData) => {
         if (error) {
+          console.log('Error here  ', error);
           return reject(error);
         } else {
           if (!exifData.gps.GPSLatitude) {
             return reject(exifData.gps.GPSLatitude);
           }
-
+          console.log('exid data', exifData);
           const lat = gpsToDecimal(
             exifData.gps.GPSLongitude,
             exifData.gps.GPSLongitudeRef

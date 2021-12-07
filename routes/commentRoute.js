@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const multer = require('multer');
+const passport = require('../utils/pass');
 
 const {
   comment_list_get,
@@ -13,11 +13,14 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
-router.route('/').get(comment_list_get).post(comment_post);
+router
+  .route('/')
+  .get(comment_list_get)
+  .post(passport.authenticate('jwt', { session: false }), comment_post);
 router
   .route('/:commentId')
   .get(comment_get)
-  .delete(comment_delete)
-  .put(comment_update);
+  .delete(passport.authenticate('jwt', { session: false }), comment_delete)
+  .put(passport.authenticate('jwt', { session: false }), comment_update);
 
 module.exports = router;
