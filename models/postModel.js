@@ -23,7 +23,7 @@ const getPost = async (postId, next) => {
       'SELECT s.post_id, s.title, s.address, s.coords, s.content, s.region_id, s.created_date, s.edited_date, s.free_or_not, s.price, s.filename, s.user_id, u.username FROM camping_site AS s INNER JOIN camping_user AS u ON s.user_id = u.user_id WHERE s.post_id = ?',
       [postId]
     );
-    return rows;
+    return rows[0];
   } catch (e) {
     console.error('Model getPost ', e.message);
     const err = httpError('SQL getPost error', 500);
