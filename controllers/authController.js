@@ -6,8 +6,6 @@ const { httpError } = require('../utils/errors');
 
 const login = (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user, info) => {
-    console.log('res.body', req.body);
-    console.log('info', info);
     if (err || !user) {
       next(httpError('Username/password incorrect', 400));
       return;
