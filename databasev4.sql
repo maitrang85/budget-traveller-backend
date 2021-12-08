@@ -93,7 +93,7 @@ INSERT INTO `camping_user` (`user_id`, `username`, `email`, `password`, `role`) 
 -- Table structure for table `like_or_dislike`
 --
 
-CREATE TABLE `reaction` (
+CREATE TABLE `camping_reaction` (
   `post_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `isLiked` tinyint(1) NOT NULL
@@ -136,7 +136,7 @@ ALTER TABLE `camping_user`
 --
 -- Indexes for table `like_or_dislike`
 --
-ALTER TABLE `reaction`
+ALTER TABLE `camping_reaction`
   ADD PRIMARY KEY (`user_id`,`post_id`),
   ADD KEY `post_id` (`post_id`);
 
@@ -189,6 +189,6 @@ ALTER TABLE `camping_site`
 --
 -- Constraints for table `like_or_dislike`
 --
-ALTER TABLE `reaction`
-  ADD CONSTRAINT `reaction_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `camping_user` (`user_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reaction_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `camping_site` (`post_id`) ON DELETE CASCADE;
+ALTER TABLE `camping_reaction`
+  ADD CONSTRAINT `camping_reaction_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `camping_user` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `camping_reaction_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `camping_site` (`post_id`) ON DELETE CASCADE;

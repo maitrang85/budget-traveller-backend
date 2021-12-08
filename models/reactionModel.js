@@ -7,7 +7,7 @@ const promisePool = pool.promise();
 const getReactions = async (postId, isLiked, next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT COUNT(isLiked) AS count_reaction FROM reaction WHERE isLiked = ? AND post_id = ?;',
+      'SELECT COUNT(isLiked) AS count_reaction FROM camping_reaction WHERE isLiked = ? AND post_id = ?;',
       [isLiked, postId]
     );
     return rows[0];
@@ -21,7 +21,7 @@ const getReactions = async (postId, isLiked, next) => {
 const insertReactions = async (reaction, next) => {
   try {
     const [rows] = await promisePool.query(
-      'INSERT INTO reaction(post_id, user_id, isLiked) VALUES (?, ?, ?);',
+      'INSERT INTO camping_reaction(post_id, user_id, isLiked) VALUES (?, ?, ?);',
       [reaction.postId, reaction.userId, reaction.isLiked]
     );
     return rows.affectedRows === 1;
@@ -35,7 +35,7 @@ const insertReactions = async (reaction, next) => {
 const deleteReaction = async (postId, userId, next) => {
   try {
     const [rows] = await promisePool.execute(
-      'DELETE FROM reaction WHERE post_id = ? AND user_id = ?;',
+      'DELETE FROM camping_reaction WHERE post_id = ? AND user_id = ?;',
       [postId, userId]
     );
     return rows.affectedRows === 1;
