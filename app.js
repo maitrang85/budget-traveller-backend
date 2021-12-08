@@ -25,11 +25,7 @@ app.use('/thumbnails', express.static('thumbnails'));
 app.use('/auth', authRoute);
 app.use('/post', postRoute);
 app.use('/user', userRoute);
-app.use(
-  '/post/:postId/comment',
-  passport.authenticate('jwt', { session: false }),
-  commentRoute
-);
+app.use('/post/:postId/comment', commentRoute);
 app.use('/apiDoc', swagger.serve, swagger.setup(apiDoc));
 
 app.use((req, res, next) => {

@@ -13,7 +13,7 @@ const { httpError } = require('../utils/errors');
 
 const comment_list_get = async (req, res, next) => {
   console.log('post id', req.params);
-  const comments = await getAllComments(req.params.postId);
+  const comments = await getAllComments(req.params.postId, next);
 
   if (comments.length > 0) {
     res.json(comments);
@@ -25,7 +25,7 @@ const comment_list_get = async (req, res, next) => {
 };
 
 const comment_get = async (req, res, next) => {
-  const comment = await getComment(req.params.commentId);
+  const comment = await getComment(req.params.commentId, next);
 
   if (comment) {
     res.json(comment);
