@@ -10,6 +10,14 @@ const {
 
 const { httpError } = require('../utils/errors');
 
+const checkToken = (req, res, next) => {
+  if (!req.user) {
+    next(new Error('token not valid'));
+  } else {
+    res.json({ user: req.user });
+  }
+};
+
 const user_list_get = async (req, res, next) => {
   const users = await getAllUsers();
 
@@ -72,6 +80,7 @@ const user_update = async (req, res, next) => {
 };
 
 module.exports = {
+  checkToken,
   user_list_get,
   user_get,
   user_post,
