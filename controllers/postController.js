@@ -43,7 +43,7 @@ const post_get = async (req, res, next) => {
 };
 
 const post_post = async (req, res, next) => {
-  const thumb = makeThumbnail(req.file.path, req.file.filename);
+  /* const thumb = makeThumbnail(req.file.path, req.file.filename); */
   const post = req.body;
 
   post.filename = req.file.filename;
@@ -78,10 +78,10 @@ const post_post = async (req, res, next) => {
 
   try {
     const id = await insertPost(post, next);
-    if (thumb) {
-      console.log('making thumbnail');
-      res.json({ message: `A post created with id ${id}`, post_id: id });
-    }
+    /* if (thumb) {
+      console.log('making thumbnail'); */
+    res.json({ message: `A post created with id ${id}`, post_id: id });
+    /*   } */
   } catch (e) {
     console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
