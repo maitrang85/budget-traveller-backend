@@ -32,6 +32,7 @@ router
     upload.single('photo'),
     post_post
   );
+
 router
   .route('/:postId')
   .get(post_get)
