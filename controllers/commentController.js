@@ -12,16 +12,13 @@ const {
 const { httpError } = require('../utils/errors');
 
 const comment_list_get = async (req, res, next) => {
-  console.log('post id', req.params);
-  const comments = await getAllComments(req.params.postId, next);
-
-  if (comments.length > 0) {
+  try {
+    const comments = await getAllComments(req.params.postId, next);
     res.json(comments);
-    return;
+  } catch {
+    const err = httpError('List of comments not found', 404);
+    next(err);
   }
-
-  const err = httpError('List of comments not found', 404);
-  next(err);
 };
 
 const comment_get = async (req, res, next) => {

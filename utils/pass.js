@@ -3,6 +3,7 @@
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
+const bcrypt = require('bcryptjs');
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 const { getUserLogin } = require('../models/userModel');
@@ -17,7 +18,7 @@ passport.use(
       if (!user) {
         return done(null, false, { message: 'Incorrect email/password' });
       }
-      if (user.password !== password) {
+      if (!(await bcrypt.compare(password, user.password))) {
         return done(null, false, { message: 'Incorrect password/password' });
       }
 

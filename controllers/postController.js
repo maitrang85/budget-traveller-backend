@@ -43,8 +43,10 @@ const post_get = async (req, res, next) => {
 };
 
 const post_post = async (req, res, next) => {
+  const thumb = makeThumbnail(req.file.path, req.file.filename);
   const post = req.body;
   post.filename = req.file.filename;
+  console.log('filename', post.filename);
   post.userId = req.user.user_id;
   console.log('post body', post);
 
@@ -73,11 +75,10 @@ const post_post = async (req, res, next) => {
     console.log('post.coords', post.coords);
   }
 
-  const thumb = makeThumbnail(req.file.path, post.filename);
-
   try {
     const id = await insertPost(post, next);
     if (thumb) {
+      console.log('making thumbnail');
       res.json({ message: `A post created with id ${id}`, post_id: id });
     }
   } catch (e) {
