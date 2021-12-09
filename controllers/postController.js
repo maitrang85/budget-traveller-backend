@@ -45,6 +45,7 @@ const post_get = async (req, res, next) => {
 const post_post = async (req, res, next) => {
   const thumb = makeThumbnail(req.file.path, req.file.filename);
   const post = req.body;
+
   post.filename = req.file.filename;
   console.log('filename', post.filename);
   post.userId = req.user.user_id;
@@ -109,8 +110,6 @@ const post_update = async (req, res, next) => {
   const post = req.body;
   post.filename = req.file.filename;
   post.postId = req.params.postId;
-  /* post.userId = req.user.user_id; */
-  /* post.role = req.user.role; */
 
   console.log('post at upadate', post);
   if (!post.filename) {

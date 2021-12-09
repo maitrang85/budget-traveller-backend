@@ -3,6 +3,7 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const jwtSecret = process.env.JWT_SECRET;
 const { httpError } = require('../utils/errors');
 const { insertUser } = require('../models/userModel');
 
@@ -20,7 +21,7 @@ const login = (req, res, next) => {
       }
     });
 
-    const token = jwt.sign(user, 'jghfjghgfjhfgjfgdewiru');
+    const token = jwt.sign(user, jwtSecret);
 
     return res.json({ user, token });
   })(req, res, next);
