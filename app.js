@@ -2,6 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
+
 const passport = require('./utils/pass');
 const swagger = require('swagger-ui-express');
 
@@ -13,9 +14,9 @@ const apiDoc = require('./utils/swagger.json');
 const { httpError } = require('./utils/errors');
 
 const app = express();
+app.use(cors());
 const port = 3000;
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());

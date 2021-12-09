@@ -7,16 +7,19 @@ const {
   checkToken,
   user_list_get,
   user_get,
-  user_post,
   user_delete,
   user_update,
 } = require('../controllers/userController');
 
 const router = express.Router();
 
-router.get('/token', checkToken);
+router.get(
+  '/token',
+  passport.authenticate('jwt', { session: false }),
+  checkToken
+);
 
-router.route('/').get(user_list_get).post(user_post);
+router.route('/').get(user_list_get);
 
 router
   .route('/:userId')
