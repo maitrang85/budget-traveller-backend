@@ -2,7 +2,7 @@ CREATE TABLE `camping_comment` (
   `comment_id` bigint(20) NOT NULL,
   `content` text NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `edited_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `edited_date` timestamp DEFAULT '0000-00-00 00:00:00',
   `post_id` bigint(20) NOT NULL,
   `user_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -26,7 +26,7 @@ CREATE TABLE `camping_site` (
   `content` text NOT NULL,
   `region_id` enum('Finland','Ahvenanmaa','Etelä-Karjala','Etelä-Pohjanmaa','Etelä-Savo','Kainuu','Kanta-Häme','Keski-Pohjanmaa','Keski-Suomi','Kymenlaakso','Lappi','Pirkanmaa','Pohjanmaa','Pohjois-Karjala','Pohjois-Pohjanmaa','Pohjois-Savo','Päijät-Häme','Satakunta','Uusimaa','Varsinais-Suomi') NOT NULL DEFAULT 'Finland',
   `created_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `edited_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `edited_date` timestamp DEFAULT '0000-00-00 00:00:00',
   `free_or_not` enum('free','paid') NOT NULL DEFAULT 'free',
   `price` decimal(7,2) DEFAULT NULL,
   `filename` text NOT NULL,
