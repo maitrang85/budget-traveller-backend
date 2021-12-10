@@ -35,6 +35,7 @@ const logout = (req, res) => {
 const user_post = async (req, res, next) => {
   try {
     req.body.password = bcrypt.hashSync(req.body.password, 12);
+
     const user = req.body;
     const id = await insertUser(user, next);
     res.json({ message: `A user created with id ${id}`, user_id: id });

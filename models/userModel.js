@@ -47,17 +47,19 @@ const getUser = async (userId, next) => {
 };
 
 const insertUser = async (user, next) => {
-  try {
+  const isEmailExisting = await isEmailExiting(user.email);
+
+  if (isEmailExisting.length === 0) {
     const [rows] = await promisePool.query(
-      'INSERT INTO `camping_user`(`username`, `email`, `password`) VALUES (?, ?, ?);',
+      'INSERT INTO camping_user(username, email, password) VALUES (?, ?, ?);',
       [user.username, user.email, user.password]
     );
     return rows.insertId;
-  } catch (e) {
-    console.error('Model insertUser ', e.message);
-    const err = httpError('Cannot insert user', 500);
-    next(err);
   }
+
+  console.error('Model insertUser ', e.message);
+  const err = httpError('Email already exists', 500);
+  next(err);
 };
 
 const deleteUser = async (userId, requestUser, next) => {
@@ -98,6 +100,14 @@ const updateUser = async (user, requestUser, next) => {
     const err = httpError('Cannot insert user', 500);
     next(err);
   }
+};
+
+const isEmailExiting = async (email) => {
+  const [rows] = await promisePool.query(
+    'SELECT * FROM camping_user WHERE email = ?;',
+    [email]
+  );
+  return rows;
 };
 
 module.exports = {
