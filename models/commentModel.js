@@ -7,7 +7,7 @@ const promisePool = pool.promise();
 const getAllComments = async (postId, next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT * FROM camping_comment WHERE post_id = ?',
+      'SELECT c.comment_id, c.content, c.created_date, c.edited_date, c.post_id, c.user_id, u.username, u.email, u.role FROM camping_comment AS c INNER JOIN camping_user AS u ON u.user_id = c.user_id WHERE c.post_id = ? ORDER BY c.created_date DESC;',
       [postId]
     );
     return rows;
@@ -21,7 +21,7 @@ const getAllComments = async (postId, next) => {
 const getComment = async (commentId, next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT * FROM camping_comment WHERE comment_id = ?',
+      'SELECT c.comment_id, c.content, c.created_date, c.edited_date, c.post_id, c.user_id, u.username, u.email, u.role FROM camping_comment AS c INNER JOIN camping_user AS u ON u.user_id = c.user_id WHERE c.comment_id = ?;',
       [commentId]
     );
     return rows[0];
@@ -35,7 +35,7 @@ const getComment = async (commentId, next) => {
 const insertComment = async (comment, next) => {
   try {
     const [rows] = await promisePool.query(
-      'INSERT INTO camping_comment(content, user_id, post_id) VALUES (?, ?, ?)',
+      'INSERT INTO camping_comment(content, user_id, post_id) VALUES (?, ?, ?);',
       [comment.content, comment.userId, comment.postId]
     );
     return rows.insertId;
