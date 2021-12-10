@@ -17,6 +17,7 @@ const {
 const { httpError } = require('../utils/errors');
 const { getCoordinates } = require('../utils/imageMeta');
 const { makeThumbnail } = require('../utils/resize');
+const { json } = require('express');
 
 const post_list_get = async (req, res, next) => {
   const posts = await getAllPosts();
@@ -34,6 +35,7 @@ const post_get = async (req, res, next) => {
   const post = await getPost(req.params.postId);
 
   if (post) {
+    post.coords = JSON.parse(post.coords);
     res.json(post);
     return;
   }
