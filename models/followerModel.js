@@ -7,7 +7,7 @@ const promisePool = pool.promise();
 const getAllFollowers = async (userId, next) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT * FROM camping_follower WHERE user_id = ?',
+      'SELECT f.user_id, following.username AS username, following.email AS user_email, f.follower_id, followed.username AS followed_username, followed.email AS followed_email FROM camping_follower AS f INNER JOIN camping_user AS following ON f.user_id = following.user_id INNER JOIN camping_user AS followed ON f.follower_id = followed.user_id WHERE f.user_id = ?;',
       [userId]
     );
     return rows;
