@@ -27,7 +27,7 @@ const follower_post = async (req, res, next) => {
       req.params.userId,
       next
     );
-    res.json({ message: `A follower is created: ${inserted}` });
+    res.json({ message: `A follower is added: ${inserted}` });
   } catch (e) {
     const err = httpError('Error following this user', 400);
     next(err);
@@ -42,7 +42,7 @@ const follower_delete = async (req, res, next) => {
       req.params.userId,
       next
     );
-    res.json({ message: `Comment deleted: ${deleted}` });
+    res.json({ message: `Unfollowing: ${deleted}` });
   } catch (e) {
     const err = httpError('Error unfollowing this user', 400);
     next(err);

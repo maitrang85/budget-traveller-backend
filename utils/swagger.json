@@ -24,6 +24,15 @@
     },
     {
       "name": "Comment endpoints"
+    },
+    {
+      "name": "Auth endpoints"
+    },
+    {
+      "name": "Reaction endpoints"
+    },
+    {
+      "name": "Follower endpoints"
     }
   ],
   "components": {
@@ -32,17 +41,6 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
-      }
-    },
-    "schemas": {
-      "testResponse": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Pong"
-          }
-        }
       }
     }
   },
@@ -148,6 +146,9 @@
       "post": {
         "tags": ["Post endpoints"],
         "description": "Insert a post",
+        "security": {
+          "bearerAuth": []
+        },
         "requestBody": {
           "required": "true",
           "content": {
@@ -196,9 +197,6 @@
                   "price": {
                     "type": "integer",
                     "format": "float"
-                  },
-                  "user_id": {
-                    "type": "integer"
                   },
                   "photo": {
                     "type": "string",
@@ -358,6 +356,9 @@
         }
       },
       "delete": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -391,6 +392,9 @@
         }
       },
       "put": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -452,9 +456,6 @@
                   "price": {
                     "type": "integer",
                     "format": "float"
-                  },
-                  "user_id": {
-                    "type": "integer"
                   },
                   "photo": {
                     "type": "string",
@@ -528,9 +529,23 @@
           }
         }
       },
-      "post": {
+      "put": {
+        "security": {
+          "bearerAuth": []
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the user to update"
+          }
+        ],
         "tags": ["User endpoints"],
-        "description": "Insert a user",
+        "description": "Update a user",
         "requestBody": {
           "required": "true",
           "content": {
@@ -562,11 +577,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "A user created with id 5"
-                    },
-                    "user_id": {
-                      "type": "integer",
-                      "example": "5"
+                      "example": "User updated: true"
                     }
                   }
                 }
@@ -636,6 +647,9 @@
         }
       },
       "delete": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -660,60 +674,6 @@
                     "message": {
                       "type": "string",
                       "example": "User deleted: true"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "userId",
-            "schema": {
-              "type": "integer"
-            },
-            "required": "true",
-            "description": "Numeric ID of the user to update"
-          }
-        ],
-        "tags": ["User endpoints"],
-        "description": "Update a user",
-        "requestBody": {
-          "required": "true",
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Server responses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "User updated: true"
                     }
                   }
                 }
@@ -773,6 +733,18 @@
                       "user_id": {
                         "type": "integer",
                         "example": "2"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "camper1"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "camper1@metropilia.fi"
+                      },
+                      "role": {
+                        "type": "integer",
+                        "example": "1"
                       }
                     }
                   }
@@ -783,6 +755,9 @@
         }
       },
       "post": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -804,9 +779,6 @@
                 "type": "object",
                 "properties": {
                   "content": {
-                    "type": "string"
-                  },
-                  "userId": {
                     "type": "string"
                   }
                 }
@@ -917,6 +889,9 @@
         }
       },
       "delete": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -959,6 +934,9 @@
         }
       },
       "put": {
+        "security": {
+          "bearerAuth": []
+        },
         "parameters": [
           {
             "in": "path",
@@ -990,9 +968,6 @@
                 "properties": {
                   "content": {
                     "type": "string"
-                  },
-                  "userId": {
-                    "type": "string"
                   }
                 }
               }
@@ -1010,6 +985,424 @@
                     "message": {
                       "type": "string",
                       "example": "Comment updated: true"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth endpoints"],
+        "description": "Log user in",
+        "requestBody": {
+          "required": "true",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "example": "camper1@metropilia.fi"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "integer",
+                          "example": "1"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "camper1"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "camper1@metropilia.fi"
+                        },
+                        "role": {
+                          "type": "integer",
+                          "example": "1"
+                        }
+                      }
+                    },
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0LCJ1c2VybmFtZSI6ImNhbXBlcjNNTU0iLCJlbWFpbCI6ImNhbXBlcjNAbWV0cm9wb2xpYS5maSIsInJvbGUiOjEsImlhdCI6MTYzOTMxNDQyM30.Q_oxEhRNoYtyHfVK367Wlk8WgcnfG8TOfvikXhn0Jv4"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth endpoints"],
+        "description": "Register a user",
+        "security": {
+          "bearerAuth": []
+        },
+        "requestBody": {
+          "required": "true",
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "A user created with id 5"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "example": "5"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "tags": ["Auth endpoints"],
+        "description": "Log a user out",
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "logout"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{postId}/reaction": {
+      "delete": {
+        "tags": ["Reaction endpoints"],
+        "description": "Delete a reaction",
+        "security": {
+          "bearerAuth": []
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the required post to get"
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the requesting user to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Reaction deleted: true"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{postId}/reaction/{isLiked}": {
+      "get": {
+        "tags": ["Reaction endpoints"],
+        "description": "Get total likes or dislike of a post",
+        "security": {
+          "bearerAuth": []
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the required post to get"
+          },
+          {
+            "in": "path",
+            "name": "isLike",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "1 for getting total likes of a poat, 0 for getting total dislikes of a post "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count_reaction": {
+                      "type": "integer",
+                      "example": "20"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Reaction endpoints"],
+        "description": "Like or dislike a post",
+        "security": {
+          "bearerAuth": []
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the required post to get"
+          },
+          {
+            "in": "path",
+            "name": "isLike",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "1 for liking of a post, 0 for disliking of a post "
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "A creation is created: true"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}/follower": {
+      "get": {
+        "tags": ["Follower endpoints"],
+        "description": "Get all the users followed by a specific user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the required user to get their followers, extrated from bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "integer",
+                        "example": "1"
+                      },
+                      "username": {
+                        "type": "string",
+                        "example": "camper1"
+                      },
+                      "user_email": {
+                        "type": "string",
+                        "example": "camper1@metropilia.fi"
+                      },
+                      "follower_id": {
+                        "type": "integer",
+                        "example": "2"
+                      },
+                      "followed_username": {
+                        "type": "string",
+                        "example": "camper2"
+                      },
+                      "followed_email": {
+                        "type": "string",
+                        "example": "camper2@metropilia.fi"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Follower endpoints"],
+        "description": "Follow a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followerId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the user to follow"
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the requesting user to follow another user, extrated from the bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "A follower is added: true"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Follower endpoints"],
+        "description": "Unfollow a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "followerId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the user to unfollow"
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the requesting user to unfollow another user, extrated from the bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unfollowing: true"
                     }
                   }
                 }

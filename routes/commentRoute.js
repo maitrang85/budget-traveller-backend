@@ -18,17 +18,18 @@ router
   .route('/')
   .get(comment_list_get)
   .post(
-    body('content').notEmpty().trim().escape(),
     passport.authenticate('jwt', { session: false }),
+    body('content').notEmpty().trim().escape(),
     comment_post
   );
+
 router
   .route('/:commentId')
   .get(comment_get)
   .delete(passport.authenticate('jwt', { session: false }), comment_delete)
   .put(
-    body('content').notEmpty().trim().escape(),
     passport.authenticate('jwt', { session: false }),
+    body('content').notEmpty().trim().escape(),
     comment_update
   );
 
