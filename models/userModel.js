@@ -82,12 +82,12 @@ const deleteUser = async (userId, requestUser, next) => {
   }
 };
 
-const updateUser = async (user, requestUser, next) => {
-  let params = [user.username, user.email, user.password, requestUser.user_id];
+const updateUser = async (user, requestUserId, requestUserEmail, next) => {
+  let params = [user.username, requestUserEmail, user.password, requestUserId];
 
-  if (requestUser.role === 0) {
+  /* if (requestUser.role === 0) {
     params = [user.username, user.email, user.password, user.userId];
-  }
+  } */
 
   try {
     const [rows] = await promisePool.query(

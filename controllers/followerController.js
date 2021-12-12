@@ -19,6 +19,8 @@ const follower_list_get = async (req, res, next) => {
 };
 
 const follower_post = async (req, res, next) => {
+  console.log('req.user.user_id', req.user.user_id);
+  console.log('req.params.userId', req.params.userId);
   try {
     const inserted = await insertFollower(
       req.user.user_id,

@@ -65,17 +65,12 @@ const deleteComment = async (commentId, userId, role, next) => {
   }
 };
 
-const updateComment = async (comment, user, next) => {
+const updateComment = async (comment, userId, next) => {
   let sql =
     'UPDATE camping_comment SET content = ?, edited_date = ? WHERE comment_id = ? AND user_id = ?;';
-  let params = [
-    comment.content,
-    comment.editedDate,
-    comment.commentId,
-    user.user_id,
-  ];
+  let params = [comment.content, comment.editedDate, comment.commentId, userId];
 
-  if (user.role === 0) {
+  /* if (user.role === 0) {
     sql =
       'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?;';
     params = [
@@ -84,7 +79,7 @@ const updateComment = async (comment, user, next) => {
       comment.userId,
       comment.commentId,
     ];
-  }
+  } */
 
   try {
     const [rows] = await promisePool.execute(sql, params);

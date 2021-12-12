@@ -1,5 +1,6 @@
 'use strict';
 
+const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
@@ -33,6 +34,14 @@ const logout = (req, res) => {
 };
 
 const user_post = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.error('user_post validation', errors.array());
+    const err = httpError('data not valid', 400);
+    next(err);
+    return;
+  }
+
   try {
     req.body.password = bcrypt.hashSync(req.body.password, 12);
 

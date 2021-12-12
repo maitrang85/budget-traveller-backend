@@ -3,6 +3,7 @@
 const express = require('express');
 const multer = require('multer');
 const passport = require('../utils/pass');
+const { body } = require('express-validator');
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.includes('image')) {
@@ -30,6 +31,8 @@ router
   .post(
     passport.authenticate('jwt', { session: false }),
     upload.single('photo'),
+    body('title').notEmpty().trim().escape(),
+    body('content').notEmpty().trim().escape(),
     post_post
   );
 
@@ -40,6 +43,8 @@ router
   .put(
     passport.authenticate('jwt', { session: false }),
     upload.single('photo'),
+    body('title').notEmpty().trim().escape(),
+    body('content').notEmpty().trim().escape(),
     post_update
   );
 

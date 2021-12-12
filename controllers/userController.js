@@ -1,5 +1,7 @@
 'use strict';
 
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const {
   getAllUsers,
   getUser,
@@ -45,11 +47,23 @@ const user_delete = async (req, res, next) => {
 };
 
 const user_update = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.error('user_post validation', errors.array());
+    const err = httpError('data not valid', 400);
+    next(err);
+    return;
+  }
+
   try {
-    req.body.userId = req.params.userId;
-    console.log('req body', req.body);
-    console.log('req user', req.user);
-    const updated = await updateUser(req.body, req.user, next);
+    req.body.password = bcrypt.hashSync(req.body.password, 12);
+    console.log('req.body', req.body);
+    const updated = await updateUser(
+      req.body,
+      req.user.user_id,
+      req.user.email,
+      next
+    );
     res.json({ message: `User updated: ${updated}` });
   } catch (e) {
     const err = httpError('Error updating user', 400);

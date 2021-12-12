@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+const { validationResult } = require('express-validator');
 const moment = require('moment');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
@@ -20,15 +21,15 @@ const { makeThumbnail } = require('../utils/resize');
 const { json } = require('express');
 
 const post_list_get = async (req, res, next) => {
-  const posts = await getAllPosts();
-
-  if (posts.length > 0) {
+  try {
+    const page = req.query.page ? Number(req.query.page) : 0;
+    const posts = await getAllPosts(page, next);
     res.json(posts);
     return;
+  } catch (e) {
+    const err = httpError('List of posts not found', 404);
+    next(err);
   }
-
-  const err = httpError('List of posts not found', 404);
-  next(err);
 };
 
 const post_get = async (req, res, next) => {
@@ -45,6 +46,14 @@ const post_get = async (req, res, next) => {
 };
 
 const post_post = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.error('post_post validation', errors.array());
+    const err = httpError('data not valid', 400);
+    next(err);
+    return;
+  }
+
   const thumb = makeThumbnail(req.file.path, req.file.filename);
   const post = req.body;
 
@@ -109,6 +118,14 @@ const post_delete = async (req, res, next) => {
 };
 
 const post_update = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.error('update_post validation', errors.array());
+    const err = httpError('data not valid', 400);
+    next(err);
+    return;
+  }
+
   const post = req.body;
   post.filename = req.file.filename;
   post.postId = req.params.postId;
@@ -145,7 +162,7 @@ const post_update = async (req, res, next) => {
   const thumb = makeThumbnail(req.file.path, post.filename);
 
   try {
-    const updated = await updatePost(post, req.user, next);
+    const updated = await updatePost(post, req.user.user_id, next);
     if (thumb) {
       res.json({ message: `Post updated: ${updated}` });
     }

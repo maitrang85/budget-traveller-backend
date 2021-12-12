@@ -30,7 +30,7 @@ app.use('/post', postRoute);
 app.use('/post/:postId/reaction', reactionRoute);
 app.use('/post/:postId/comment', commentRoute);
 app.use('/user', userRoute);
-app.use('/post/:postId/comment', commentRoute);
+app.use('/user/:userId/follower', followerRoute);
 app.use('/apiDoc', swagger.serve, swagger.setup(apiDoc));
 
 app.use((req, res, next) => {
