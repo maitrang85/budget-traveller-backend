@@ -11,7 +11,7 @@ const getAllPosts = async (page, next) => {
   const [rows] = await promisePool.query(totalPostsQuery);
   const totalPosts = rows[0].total_posts_count;
 
-  let limit = page === 0 ? totalPosts : 2;
+  let limit = page === 0 ? totalPosts : 9;
   let offset = page === 0 ? 0 : (page - 1) * limit;
 
   const query =
