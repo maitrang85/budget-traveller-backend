@@ -20,7 +20,7 @@ const getAllPosts = async (page, next) => {
   try {
     const [rows] = await promisePool.query(query, [limit, offset]);
     const jsonResult = {
-      total_post_count: totalPosts,
+      total_posts_count: totalPosts,
       page_number: page,
       posts: rows,
     };
