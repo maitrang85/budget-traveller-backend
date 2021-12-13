@@ -115,24 +115,6 @@ const updatePost = async (post, userId, next) => {
     userId,
   ];
 
-  /* if (user.role === 0) {
-    sql =
-      'UPDATE camping_site SET title = ?, address =?, coords = ?, content = ?, region_id = ?, edited_date = ?, free_or_not = ?, price = ?, filename = ?, user_id = ?  WHERE post_id = ?;';
-    params = [
-      post.title,
-      post.address,
-      post.coords,
-      post.content,
-      post.regionId,
-      post.editedDate,
-      post.freeOrNot,
-      post.price,
-      post.filename,
-      post.userId,
-      post.postId,
-    ];
-  } */
-
   try {
     const [rows] = await promisePool.execute(sql, params);
     return rows.affectedRows === 1;

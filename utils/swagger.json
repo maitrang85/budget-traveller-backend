@@ -48,92 +48,115 @@
     "/post": {
       "get": {
         "tags": ["Post endpoints"],
-        "description": "Get all posts",
+        "description": "Get all campsites",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "The page which the user wants to display"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Server response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "post_id": {
-                        "type": "integer",
-                        "example": "1"
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "Campsite in Nuuksio"
-                      },
-                      "address": {
-                        "type": "string",
-                        "example": "Karaportti 2"
-                      },
-                      "coords": {
-                        "type": "string",
-                        "example": "Karaportti 2"
-                      },
-                      "content": {
-                        "type": "string",
-                        "example": "A nice place for a getaway weekend"
-                      },
-                      "regionId": {
-                        "type": "string",
-                        "enum": [
-                          "Finland",
-                          "Ahvenanmaa",
-                          "Etelä-Karjala",
-                          "Etelä-Pohjanmaa",
-                          "Etelä-Savo",
-                          "Kainuu",
-                          "Kanta-Häme",
-                          "Keski-Pohjanmaa",
-                          "Keski-Suomi",
-                          "Kymenlaakso",
-                          "Lappi",
-                          "Pirkanmaa",
-                          "Pohjanmaa",
-                          "Pohjois-Karjala",
-                          "Pohjois-Pohjanmaa",
-                          "Pohjois-Savo",
-                          "Päijät-Häme",
-                          "Satakunta",
-                          "Uusimaa",
-                          "Varsinais-Suomi"
-                        ]
-                      },
-                      "created_date": {
-                        "type": "string",
-                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
-                        "example": "2021-12-04 20:49:26"
-                      },
-                      "edited_date": {
-                        "type": "string",
-                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
-                        "example": "2021-12-04 20:49:26"
-                      },
-                      "free_or_not": {
-                        "type": "string",
-                        "enum": ["free", "paid"]
-                      },
-                      "price": {
-                        "type": "integer",
-                        "format": "float",
-                        "example": "25.00"
-                      },
-                      "filename": {
-                        "type": "string",
-                        "example": "97b439006ad80c172419ce51354b06b1"
-                      },
-                      "user_id": {
-                        "type": "integer",
-                        "example": "1"
-                      },
-                      "username": {
-                        "type": "string",
-                        "example": "camper1"
+                  "type": "object",
+                  "properties": {
+                    "total_posts_count": {
+                      "type": "integer",
+                      "example": "14"
+                    },
+                    "page_number": {
+                      "type": "integer",
+                      "example": "2"
+                    },
+                    "posts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "post_id": {
+                            "type": "integer",
+                            "example": "1"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Campsite in Nuuksio"
+                          },
+                          "address": {
+                            "type": "string",
+                            "example": "Karaportti 2"
+                          },
+                          "coords": {
+                            "type": "string",
+                            "example": "Karaportti 2"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "A nice place for a getaway weekend"
+                          },
+                          "regionId": {
+                            "type": "string",
+                            "enum": [
+                              "Ahvenanmaa",
+                              "Etelä-Karjala",
+                              "Etelä-Pohjanmaa",
+                              "Etelä-Savo",
+                              "Kainuu",
+                              "Kanta-Häme",
+                              "Keski-Pohjanmaa",
+                              "Keski-Suomi",
+                              "Kymenlaakso",
+                              "Lappi",
+                              "Pirkanmaa",
+                              "Pohjanmaa",
+                              "Pohjois-Karjala",
+                              "Pohjois-Pohjanmaa",
+                              "Pohjois-Savo",
+                              "Päijät-Häme",
+                              "Satakunta",
+                              "Uusimaa",
+                              "Varsinais-Suomi"
+                            ]
+                          },
+                          "created_date": {
+                            "type": "string",
+                            "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                            "example": "2021-12-04 20:49:26"
+                          },
+                          "edited_date": {
+                            "type": "string",
+                            "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                            "example": "2021-12-04 20:49:26"
+                          },
+                          "free_or_not": {
+                            "type": "string",
+                            "enum": ["free", "paid"]
+                          },
+                          "price": {
+                            "type": "integer",
+                            "format": "float",
+                            "example": "25.00"
+                          },
+                          "filename": {
+                            "type": "string",
+                            "example": "97b439006ad80c172419ce51354b06b1"
+                          },
+                          "user_id": {
+                            "type": "integer",
+                            "example": "1"
+                          },
+                          "username": {
+                            "type": "string",
+                            "example": "camper1"
+                          }
+                        }
                       }
                     }
                   }
@@ -145,7 +168,7 @@
       },
       "post": {
         "tags": ["Post endpoints"],
-        "description": "Insert a post",
+        "description": "Insert a campsite",
         "security": {
           "bearerAuth": []
         },
@@ -168,7 +191,6 @@
                   "regionId": {
                     "type": "string",
                     "enum": [
-                      "Finland",
                       "Ahvenanmaa",
                       "Etelä-Karjala",
                       "Etelä-Pohjanmaa",
@@ -257,98 +279,85 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "post_id": {
-                        "type": "integer",
-                        "example": "1"
-                      },
-                      "title": {
-                        "type": "string",
-                        "example": "Campsite in Nuuksio"
-                      },
-                      "address": {
-                        "type": "string",
-                        "example": "Karaportti 2"
-                      },
-                      "coords": {
-                        "type": "string",
-                        "example": "Karaportti 2"
-                      },
-                      "content": {
-                        "type": "string",
-                        "example": "A nice place for a getaway weekend"
-                      },
-                      "regionId": {
-                        "type": "string",
-                        "enum": [
-                          "Finland",
-                          "Ahvenanmaa",
-                          "Etelä-Karjala",
-                          "Etelä-Pohjanmaa",
-                          "Etelä-Savo",
-                          "Kainuu",
-                          "Kanta-Häme",
-                          "Keski-Pohjanmaa",
-                          "Keski-Suomi",
-                          "Kymenlaakso",
-                          "Lappi",
-                          "Pirkanmaa",
-                          "Pohjanmaa",
-                          "Pohjois-Karjala",
-                          "Pohjois-Pohjanmaa",
-                          "Pohjois-Savo",
-                          "Päijät-Häme",
-                          "Satakunta",
-                          "Uusimaa",
-                          "Varsinais-Suomi"
-                        ]
-                      },
-                      "created_date": {
-                        "type": "string",
-                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
-                        "example": "2021-12-04 20:49:26"
-                      },
-                      "edited_date": {
-                        "type": "string",
-                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
-                        "example": "2021-12-04 20:49:26"
-                      },
-                      "free_or_not": {
-                        "type": "string",
-                        "enum": ["free", "paid"]
-                      },
-                      "price": {
-                        "type": "integer",
-                        "format": "float",
-                        "example": "25.00"
-                      },
-                      "filename": {
-                        "type": "string",
-                        "example": "97b439006ad80c172419ce51354b06b1"
-                      },
-                      "user_id": {
-                        "type": "integer",
-                        "example": "1"
-                      },
-                      "username": {
-                        "type": "string",
-                        "example": "camper1"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "post_id": {
+                      "type": "integer",
+                      "example": "1"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Campsite in Nuuksio"
+                    },
+                    "address": {
+                      "type": "string",
+                      "example": "Karaportti 2"
+                    },
+                    "coords": {
+                      "type": "string",
+                      "example": "Karaportti 2"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "A nice place for a getaway weekend"
+                    },
+                    "regionId": {
+                      "type": "string",
+                      "enum": [
+                        "Finland",
+                        "Ahvenanmaa",
+                        "Etelä-Karjala",
+                        "Etelä-Pohjanmaa",
+                        "Etelä-Savo",
+                        "Kainuu",
+                        "Kanta-Häme",
+                        "Keski-Pohjanmaa",
+                        "Keski-Suomi",
+                        "Kymenlaakso",
+                        "Lappi",
+                        "Pirkanmaa",
+                        "Pohjanmaa",
+                        "Pohjois-Karjala",
+                        "Pohjois-Pohjanmaa",
+                        "Pohjois-Savo",
+                        "Päijät-Häme",
+                        "Satakunta",
+                        "Uusimaa",
+                        "Varsinais-Suomi"
+                      ]
+                    },
+                    "created_date": {
+                      "type": "string",
+                      "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                      "example": "2021-12-04 20:49:26"
+                    },
+                    "edited_date": {
+                      "type": "string",
+                      "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                      "example": "2021-12-04 20:49:26"
+                    },
+                    "free_or_not": {
+                      "type": "string",
+                      "enum": ["free", "paid"]
+                    },
+                    "price": {
+                      "type": "integer",
+                      "format": "float",
+                      "example": "25.00"
+                    },
+                    "filename": {
+                      "type": "string",
+                      "example": "97b439006ad80c172419ce51354b06b1"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "example": "1"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "camper1"
                     }
                   }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/internalServerError"
                 }
               }
             }
@@ -427,7 +436,6 @@
                   "regionId": {
                     "type": "string",
                     "enum": [
-                      "Finland",
                       "Ahvenanmaa",
                       "Etelä-Karjala",
                       "Etelä-Pohjanmaa",

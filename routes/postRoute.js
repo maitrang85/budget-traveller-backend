@@ -6,7 +6,7 @@ const passport = require('../utils/pass');
 const { body } = require('express-validator');
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.includes('image')) {
+  if (file.mimetype.includes('image') || file.mimetype.includes('video')) {
     cb(null, true);
   } else {
     cb(null, false);

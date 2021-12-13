@@ -18,7 +18,6 @@ const {
 const { httpError } = require('../utils/errors');
 const { getCoordinates } = require('../utils/imageMeta');
 const { makeThumbnail } = require('../utils/resize');
-const { json } = require('express');
 
 const post_list_get = async (req, res, next) => {
   try {
@@ -46,6 +45,7 @@ const post_get = async (req, res, next) => {
 };
 
 const post_post = async (req, res, next) => {
+  console.log('req.file', req.file);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.error('post_post validation', errors.array());
@@ -54,7 +54,10 @@ const post_post = async (req, res, next) => {
     return;
   }
 
-  const thumb = makeThumbnail(req.file.path, req.file.filename);
+  if (req.file.mimetype.includes('image')) {
+    const thumb = makeThumbnail(req.file.path, req.file.filename);
+  }
+
   const post = req.body;
 
   post.filename = req.file.filename;
@@ -89,10 +92,10 @@ const post_post = async (req, res, next) => {
 
   try {
     const id = await insertPost(post, next);
-    if (thumb) {
-      console.log('making thumbnail');
-      res.json({ message: `A post created with id ${id}`, post_id: id });
-    }
+    /* if (thumb) { */
+    /* console.log('making thumbnail'); */
+    res.json({ message: `A post created with id ${id}`, post_id: id });
+    /* } */
   } catch (e) {
     console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
