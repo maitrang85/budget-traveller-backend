@@ -11,6 +11,8 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+// followerRoute includes the routes for getting all followers of a user,
+// following a user and unfollowing a user
 router
   .route('/')
   .get(follower_list_get)

@@ -12,6 +12,7 @@ const {
 
 const { httpError } = require('../utils/errors');
 
+// Controller for getting all comments of a post
 const comment_list_get = async (req, res, next) => {
   try {
     const comments = await getAllComments(req.params.postId, next);
@@ -22,6 +23,7 @@ const comment_list_get = async (req, res, next) => {
   }
 };
 
+// Controller for getting a comment in a post by their respective ID
 const comment_get = async (req, res, next) => {
   const comment = await getComment(req.params.commentId, next);
 
@@ -34,7 +36,9 @@ const comment_get = async (req, res, next) => {
   next(err);
 };
 
+// Controller for inserting a comment to a post
 const comment_post = async (req, res, next) => {
+  // Checking if the user sent valid data
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.error('comment_post validation', errors.array());
@@ -44,10 +48,10 @@ const comment_post = async (req, res, next) => {
   }
 
   try {
+    // Preparing the req.body before inserting to the database
     const comment = req.body;
     comment.userId = req.user.user_id;
     comment.postId = req.params.postId;
-    console.log('comment', req.body);
     const id = await insertComment(comment, next);
     res.json({ message: `A comment created with id ${id}`, comment_id: id });
   } catch (e) {
@@ -57,6 +61,7 @@ const comment_post = async (req, res, next) => {
   }
 };
 
+// Controller for deleting a comment of a post
 const comment_delete = async (req, res, next) => {
   try {
     const deleted = await deleteComment(
@@ -73,7 +78,9 @@ const comment_delete = async (req, res, next) => {
   }
 };
 
+// Controller for editting a comment
 const comment_update = async (req, res, next) => {
+  // Checking if the user sent valid data
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -84,6 +91,7 @@ const comment_update = async (req, res, next) => {
   }
 
   try {
+    // Preparing the req.body before inserting to the database
     const comment = req.body;
     comment.commentId = req.params.commentId;
     comment.postId = req.params.postId;

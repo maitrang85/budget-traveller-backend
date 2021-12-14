@@ -4,6 +4,9 @@ const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
 
+// Model for getting all followers of a user
+// Required parameters: userId from req.params
+// Return: array of object in JSON format
 const getAllFollowers = async (userId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -18,6 +21,9 @@ const getAllFollowers = async (userId, next) => {
   }
 };
 
+// Model for following a user
+// Required parameters: userId from req.user and followerId from req.params
+// Return: object in JSON format with a predefined message
 const insertFollower = async (userId, followerId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -32,6 +38,9 @@ const insertFollower = async (userId, followerId, next) => {
   }
 };
 
+// Model for unfollowing a user
+// Required parameters: userId from req.user and followerId from req.params
+// Return: object in JSON format with a predefined message
 const deleteFollower = async (userId, followerId, next) => {
   try {
     const [rows] = await promisePool.execute(

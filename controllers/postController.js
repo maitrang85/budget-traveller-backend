@@ -19,8 +19,11 @@ const { httpError } = require('../utils/errors');
 const { getCoordinates } = require('../utils/imageMeta');
 const { makeThumbnail } = require('../utils/resize');
 
+// Controller to getting all the post from the newest to the oldest according to the created date of the post
 const post_list_get = async (req, res, next) => {
   try {
+    // Getting the page which the user wants to see.
+    // If there is no page given, the default behavior is return all the posts in the database.
     const page = req.query.page ? Number(req.query.page) : 0;
     const posts = await getAllPosts(page, next);
     res.json(posts);
@@ -31,6 +34,7 @@ const post_list_get = async (req, res, next) => {
   }
 };
 
+// Controller for getting a specific post by postId
 const post_get = async (req, res, next) => {
   const post = await getPost(req.params.postId);
 
@@ -44,8 +48,9 @@ const post_get = async (req, res, next) => {
   next(err);
 };
 
+// Controller for inserting a post
 const post_post = async (req, res, next) => {
-  console.log('req.file', req.file);
+  // Checking if the user sent valid data
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.error('post_post validation', errors.array());
@@ -54,6 +59,7 @@ const post_post = async (req, res, next) => {
     return;
   }
 
+  // Making thumbnail for frontend to use
   if (req.file.mimetype.includes('image')) {
     const thumb = makeThumbnail(req.file.path, req.file.filename);
   }
@@ -61,24 +67,27 @@ const post_post = async (req, res, next) => {
   const post = req.body;
 
   post.filename = req.file.filename;
-  console.log('filename', post.filename);
   post.userId = req.user.user_id;
-  console.log('post body', post);
 
+  // If filename is not valid (is not an image or video), error will be sent.
   if (!post.filename) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
   }
 
+  // If the user does not input any address, the default for address will be empty string.
   if (!post.address) {
     post.address = '';
   }
 
+  // If the user chooses 'free' for the campsite cost, the default price will be 0.0.
   if (post.freeOrNot === 'free') {
     post.price = 0.0;
   }
 
+  // Getting the coordinates for campsite location
+  // The coordinates can be attained via EXIF data in the image, address inputted by user or regionId
   try {
     const coords = await getCoordinates(req.file.path);
     post.coords = JSON.stringify(coords);
@@ -92,10 +101,7 @@ const post_post = async (req, res, next) => {
 
   try {
     const id = await insertPost(post, next);
-    /* if (thumb) { */
-    /* console.log('making thumbnail'); */
     res.json({ message: `A post created with id ${id}`, post_id: id });
-    /* } */
   } catch (e) {
     console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
@@ -104,6 +110,7 @@ const post_post = async (req, res, next) => {
   }
 };
 
+// Controller for deleting a post
 const post_delete = async (req, res, next) => {
   try {
     const deleted = await deletePost(
@@ -120,7 +127,9 @@ const post_delete = async (req, res, next) => {
   }
 };
 
+// Controller of updating a post
 const post_update = async (req, res, next) => {
+  // Checking if the user sent valid data
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.error('update_post validation', errors.array());
@@ -133,28 +142,29 @@ const post_update = async (req, res, next) => {
   post.filename = req.file.filename;
   post.postId = req.params.postId;
 
-  console.log('post at upadate', post);
+  // If filename is not valid (is not an image or video), error will be sent.
   if (!post.filename) {
     const err = httpError('Invalid file', 400);
     next(err);
     return;
   }
 
+  // Getting coordinates from EXIF data of the image or from inputted address or from regionId
   try {
     const coords = await getCoordinates(req.file.path);
     post.coords = JSON.stringify(coords);
-    console.log('coords of img', coords);
   } catch {
     post.coords = JSON.stringify(
       await getGeoDataFromMapBox(post.address, post.regionId)
     );
-    console.log('post.coords', post.coords);
   }
 
+  // If the user does not input any address, the default for address will be empty string.
   if (!post.address) {
     post.address = '';
   }
 
+  // If the user chooses 'free' for the campsite cost, the default price will be 0.0.
   if (post.freeOrNot === 'free') {
     post.price = 0.0;
   }
@@ -162,13 +172,14 @@ const post_update = async (req, res, next) => {
   post.postId = req.params.postId;
   post.editedDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
-  const thumb = makeThumbnail(req.file.path, post.filename);
+  // Making thumbnail for frontend to use
+  if (req.file.mimetype.includes('image')) {
+    const thumb = makeThumbnail(req.file.path, post.filename);
+  }
 
   try {
     const updated = await updatePost(post, req.user.user_id, next);
-    if (thumb) {
-      res.json({ message: `Post updated: ${updated}` });
-    }
+    res.json({ message: `Post updated: ${updated}` });
   } catch (e) {
     const err = httpError('Error updating post', 400);
     next(err);
@@ -176,6 +187,7 @@ const post_update = async (req, res, next) => {
   }
 };
 
+// Function for getting coordinates from Mapbox
 const getGeoDataFromMapBox = async (address, regionId) => {
   try {
     let mapboxQuery = '';
@@ -195,7 +207,6 @@ const getGeoDataFromMapBox = async (address, regionId) => {
       geoData.body.features[0].geometry.coordinates[1],
       geoData.body.features[0].geometry.coordinates[0],
     ];
-    console.log('Coordinate in getGeoDataFromMapBox', coords);
     return coords;
   } catch (error) {
     console.log('Error in getGeoDateFromMapBox', error);

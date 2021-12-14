@@ -4,6 +4,7 @@ const {
   getReactions,
   insertReactions,
   deleteReaction,
+  hasReactedByUser,
 } = require('../models/reactionModel');
 
 const { httpError } = require('../utils/errors');
@@ -22,6 +23,24 @@ const reaction_get = async (req, res, next) => {
 
   const err = httpError('Requested reaction not found', 404);
   next(err);
+};
+
+const has_reacted_by_user = async (req, res, next) => {
+  try {
+    const reacted = await hasReactedByUser(
+      req.params.postId,
+      req.user.user_id,
+      next
+    );
+    res.json(reacted);
+  } catch (e) {
+    const err = httpError(
+      'Error getting reaction of this post from this user',
+      400
+    );
+    next(err);
+    return;
+  }
 };
 
 const reaction_post = async (req, res, next) => {
@@ -60,4 +79,5 @@ module.exports = {
   reaction_get,
   reaction_post,
   reaction_delete,
+  has_reacted_by_user,
 };

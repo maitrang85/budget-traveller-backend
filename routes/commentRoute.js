@@ -14,6 +14,8 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+// Routes for get all the comments and insert a comment to a post
+// Route for insert comments to a post is available only to authenticated users
 router
   .route('/')
   .get(comment_list_get)
@@ -23,6 +25,8 @@ router
     comment_post
   );
 
+// Route for get a specific comment (by commentId) of a post (by postId),
+// delete a comment of a post, and update a comment of a post.
 router
   .route('/:commentId')
   .get(comment_get)

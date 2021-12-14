@@ -18,6 +18,20 @@ const getReactions = async (postId, isLiked, next) => {
   }
 };
 
+const hasReactedByUser = async (postId, userId, next) => {
+  try {
+    const [rows] = await promisePool.query(
+      'SELECT * FROM camping_reaction WHERE post_id = ? AND user_id = ?;',
+      [postId, userId]
+    );
+    return rows;
+  } catch (e) {
+    console.error('Model hasReactedByUser ', e.message);
+    const err = httpError('SQL hasReactedByUser model error', 500);
+    next(err);
+  }
+};
+
 const insertReactions = async (reaction, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -50,4 +64,5 @@ module.exports = {
   getReactions,
   insertReactions,
   deleteReaction,
+  hasReactedByUser,
 };

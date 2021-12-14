@@ -8,6 +8,7 @@ const {
 
 const { httpError } = require('../utils/errors');
 
+// Controller for getting all followers of a user
 const follower_list_get = async (req, res, next) => {
   try {
     const followers = await getAllFollowers(req.params.userId, next);
@@ -18,9 +19,8 @@ const follower_list_get = async (req, res, next) => {
   }
 };
 
+// Controller for following a user
 const follower_post = async (req, res, next) => {
-  console.log('req.user.user_id', req.user.user_id);
-  console.log('req.params.userId', req.params.userId);
   try {
     const inserted = await insertFollower(
       req.user.user_id,
@@ -35,6 +35,7 @@ const follower_post = async (req, res, next) => {
   }
 };
 
+// Controller for unfollowing a user
 const follower_delete = async (req, res, next) => {
   try {
     const deleted = await deleteFollower(

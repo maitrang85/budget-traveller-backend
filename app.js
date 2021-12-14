@@ -12,7 +12,7 @@ const userRoute = require('./routes/userRoute');
 const commentRoute = require('./routes/commentRoute');
 const reactionRoute = require('./routes/reactionRoute');
 const followerRoute = require('./routes/followerRoute');
-const apiDoc = require('./utils/swagger.json');
+const apiDoc = require('./apiDoc.json');
 const { httpError } = require('./utils/errors');
 
 const app = express();

@@ -4,6 +4,9 @@ const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
 
+// Model for getting all comments of a post
+// Required parameters: postId from req.params
+// Return: array of object in JSON format
 const getAllComments = async (postId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -18,6 +21,9 @@ const getAllComments = async (postId, next) => {
   }
 };
 
+// Model for getting a comment of a post
+// Required parameters: commentId from req.params
+// Return: object in JSON format
 const getComment = async (commentId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -32,6 +38,9 @@ const getComment = async (commentId, next) => {
   }
 };
 
+// Model for inserting a comment to a post
+// Required parameters: req.body from controller
+// Return: object in JSON format with a predefined message
 const insertComment = async (comment, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -46,6 +55,9 @@ const insertComment = async (comment, next) => {
   }
 };
 
+// Model for deleting a comment to a post
+// Required parameters: commentId from req.params, userId and role from req.user
+// Return: object in JSON format with a predefined message
 const deleteComment = async (commentId, userId, role, next) => {
   let sql = 'DELETE FROM camping_comment WHERE comment_id = ? AND user_id = ?;';
   let params = [commentId, userId];
@@ -65,21 +77,13 @@ const deleteComment = async (commentId, userId, role, next) => {
   }
 };
 
+// Model for updating a comment to a post
+// Required parameters: req.body from controller and userId from req.user
+// Return: object in JSON format with a predefined message
 const updateComment = async (comment, userId, next) => {
   let sql =
     'UPDATE camping_comment SET content = ?, edited_date = ? WHERE comment_id = ? AND user_id = ?;';
   let params = [comment.content, comment.editedDate, comment.commentId, userId];
-
-  /* if (user.role === 0) {
-    sql =
-      'UPDATE camping_comment SET content = ?, edited_date = ?, user_id = ? WHERE comment_id = ?;';
-    params = [
-      comment.content,
-      comment.editedDate,
-      comment.userId,
-      comment.commentId,
-    ];
-  } */
 
   try {
     const [rows] = await promisePool.execute(sql, params);
