@@ -22,7 +22,7 @@ Budget Traveler emloys REST architectural style as the ultimate guide for design
 ### User stratification
 Users are divided into three different groups (unauthenticated users, authenticated users and administrators) with different permissions to access to the web resources. Unauthenticated users can browse posts, read comments and see other users. Authenticated users, on the top of granted permissions for unauthenticated users, can add new posts, upload images, comment in other users' posts, like and dislike posts, modify or delete their own posts and own comments. Administrators are able to delete offending posts and comments to keep this community enjoyable to all the members.  
 
-### Additional features:
+### Additional features
 - Most populars posts are displayed on the main page for easy accessibility of useful information.
 - Newest posts and comments will be placed on the main page and on the top to provide updated information.
 - Campsites can be filtered according to regions in Finland.
