@@ -13,6 +13,10 @@
     {
       "url": "http://localhost:3000",
       "description": "Local environment"
+    },
+    {
+      "url": "http://10.114.32.115/app",
+      "description": "Production environment"
     }
   ],
   "tags": [
@@ -40,7 +44,9 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "in": "header",
+        "description": "JWT Authorization header using the Bearer scheme"
       }
     }
   },
@@ -48,7 +54,7 @@
     "/post": {
       "get": {
         "tags": ["Post endpoints"],
-        "description": "Get all campsites",
+        "description": "Get all posts in descending order",
         "parameters": [
           {
             "in": "query",
@@ -168,7 +174,7 @@
       },
       "post": {
         "tags": ["Post endpoints"],
-        "description": "Insert a campsite",
+        "description": "Insert a campsite | Authorization: Bearer token",
         "security": {
           "bearerAuth": []
         },
@@ -178,6 +184,13 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "title",
+                  "content",
+                  "regionId",
+                  "freeOrNot",
+                  "photo"
+                ],
                 "properties": {
                   "title": {
                     "type": "string"
@@ -222,7 +235,8 @@
                   },
                   "photo": {
                     "type": "string",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "JPG, JPEG, PNG and GIF files only"
                   }
                 }
               },
@@ -380,7 +394,7 @@
           }
         ],
         "tags": ["Post endpoints"],
-        "description": "API endpoint for deleting a specific post",
+        "description": "API endpoint for deleting a specific post | Authorization: bearer token",
         "responses": {
           "200": {
             "description": "Server responses",
@@ -416,13 +430,20 @@
           }
         ],
         "tags": ["Post endpoints"],
-        "description": "Update a post",
+        "description": "Update a post | Authorization: bearer token",
         "requestBody": {
           "required": "true",
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "title",
+                  "content",
+                  "regionId",
+                  "freeOrNot",
+                  "photo"
+                ],
                 "properties": {
                   "title": {
                     "type": "string"
@@ -467,7 +488,8 @@
                   },
                   "photo": {
                     "type": "string",
-                    "format": "binary"
+                    "format": "binary",
+                    "description": "JPG, JPEG, PNG and GIF files only"
                   }
                 }
               },
@@ -553,22 +575,22 @@
           }
         ],
         "tags": ["User endpoints"],
-        "description": "Update a user",
+        "description": "Update a user | Authorization: bearer token",
         "requestBody": {
           "required": "true",
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
+                "required": ["username", "email", "password"],
                 "properties": {
                   "username": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Minimum 3 characters"
                   },
                   "password": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Minimum 8 characters, at least 1 capital character"
                   }
                 }
               }
@@ -641,16 +663,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/internalServerError"
-                }
-              }
-            }
           }
         }
       },
@@ -670,7 +682,7 @@
           }
         ],
         "tags": ["User endpoints"],
-        "description": "API endpoint for deleting a specific user",
+        "description": "API endpoint for deleting a specific user | Authorization: bearer token",
         "responses": {
           "200": {
             "description": "Server responses",
@@ -705,7 +717,7 @@
           }
         ],
         "tags": ["Comment endpoints"],
-        "description": "Get all comments of a specific post",
+        "description": "Get all comments of a specific post in descending order",
         "responses": {
           "200": {
             "description": "Server response",
@@ -778,13 +790,14 @@
           }
         ],
         "tags": ["Comment endpoints"],
-        "description": "Insert a comment",
+        "description": "Insert a comment | Authorization: bearer token",
         "requestBody": {
           "required": "true",
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
+                "required": ["content"],
                 "properties": {
                   "content": {
                     "type": "string"
@@ -921,7 +934,7 @@
           }
         ],
         "tags": ["Comment endpoints"],
-        "description": "API endpoint for deleting a specific comment of a specific post",
+        "description": "API endpoint for deleting a specific comment of a specific post | Authorization: bearer token",
         "responses": {
           "200": {
             "description": "Server responses",
@@ -966,13 +979,14 @@
           }
         ],
         "tags": ["Comment endpoints"],
-        "description": "Update a comment",
+        "description": "Update a comment | Authorization: bearer token",
         "requestBody": {
           "required": "true",
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
+                "required": ["content"],
                 "properties": {
                   "content": {
                     "type": "string"
@@ -1012,6 +1026,7 @@
             "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
+                "required": ["username", "password"],
                 "properties": {
                   "username": {
                     "type": "string",
@@ -1079,12 +1094,19 @@
             "application/x-www-form-urlencoded": {
               "schema": {
                 "type": "object",
+                "required": ["email", "username", "password"],
                 "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "email type"
+                  },
                   "username": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Minimum 3 characters"
                   },
                   "password": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Minimum 8 characters, at least 1 capital character"
                   }
                 }
               }
@@ -1142,7 +1164,7 @@
     "/post/{postId}/reaction": {
       "delete": {
         "tags": ["Reaction endpoints"],
-        "description": "Delete a reaction",
+        "description": "Delete a reaction | Authorization: bearer token",
         "security": {
           "bearerAuth": []
         },
@@ -1234,7 +1256,7 @@
       },
       "post": {
         "tags": ["Reaction endpoints"],
-        "description": "Like or dislike a post",
+        "description": "Like or dislike a post | Authorization: bearer token",
         "security": {
           "bearerAuth": []
         },
@@ -1337,7 +1359,7 @@
       },
       "post": {
         "tags": ["Follower endpoints"],
-        "description": "Follow a user",
+        "description": "Follow a user | Authorization: bearer token",
         "parameters": [
           {
             "in": "path",
@@ -1379,7 +1401,7 @@
       },
       "delete": {
         "tags": ["Follower endpoints"],
-        "description": "Unfollow a user",
+        "description": "Unfollow a user | Authorization: bearer token",
         "parameters": [
           {
             "in": "path",

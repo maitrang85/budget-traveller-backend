@@ -12,10 +12,11 @@ const getCoordinates = (imgFile) => {
           console.log('Error here  ', error);
           return reject(error);
         } else {
+          console.log('exid data', exifData);
           if (!exifData.gps.GPSLatitude) {
             return reject(exifData.gps.GPSLatitude);
           }
-          console.log('exid data', exifData);
+
           const lat = gpsToDecimal(
             exifData.gps.GPSLongitude,
             exifData.gps.GPSLongitudeRef
