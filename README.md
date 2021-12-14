@@ -16,7 +16,7 @@ Budget Traveler emloys REST architectural style as the ultimate guide for design
 
 ## How to install the project
 1. Create the database using the script in the file databasev5.sql
-2. Clone the repo to your local machine and run `npm install` to install required dependencies for the project
+2. Clone this repository to your local machine and run `npm install` to install required dependencies for the project
 
 ## Features of the project
 ### User stratification
@@ -27,5 +27,5 @@ Users are divided into three different groups (unauthenticated users, authentica
 - Newest posts and comments will be placed on the main page and on the top to provide updated information.
 - Campsites can be filtered according to regions in Finland.
 - A map of the campsite location and its surrounding area to equip campers with necessary information for trip planning
-- Responsive UI that is beautifully fitted to both destop and mobile screens
+- Responsive UI that is beautifully fitted to both desktop and mobile screens
 
