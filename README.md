@@ -30,5 +30,5 @@ Users are divided into three different groups (unauthenticated users, authentica
 - Responsive UI that is beautifully fitted to both desktop and mobile screens
 
 ## API Documentation
-Please see the apiDoc.json file (choose rendering mode if viewing directly on gitlab)
+Please see the apiDoc.json file (choose 'Display rendered file' mode if viewing directly on gitlab)
 
