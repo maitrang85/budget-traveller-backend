@@ -29,3 +29,6 @@ Users are divided into three different groups (unauthenticated users, authentica
 - A map of the campsite location and its surrounding area to equip campers with necessary information for trip planning
 - Responsive UI that is beautifully fitted to both desktop and mobile screens
 
+## API Documentation
+Please see the apiDoc.json file (choose rendering mode if viewing directly on gitlab)
+
