@@ -19,6 +19,13 @@ const app = express();
 app.use(cors());
 const port = 3000;
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+if (process.env.NODE_ENV === 'production') {
+  require('./utils/production')(app, port);
+} else {
+  require('./utils/localhost')(app, 8000, port);
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
@@ -42,5 +49,3 @@ app.use((err, req, res, next) => {
   const status = err.status || 500;
   res.status(status).json({ message: err.message || 'Internal error' });
 });
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
