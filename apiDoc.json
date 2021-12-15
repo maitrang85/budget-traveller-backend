@@ -1162,6 +1162,58 @@
       }
     },
     "/post/{postId}/reaction": {
+      "get": {
+        "tags": ["Reaction endpoints"],
+        "description": "Check if the logged-in user reacted to this post or not | Authentication: bearer token",
+        "security": {
+          "bearerAuth": []
+        },
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": "true",
+            "description": "Numeric ID of the required post to get"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server responses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "post_id": {
+                        "type": "integer",
+                        "example": 15
+                      },
+                      "user_id": {
+                        "type": "integer",
+                        "example": 7
+                      },
+                      "isLiked": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "reaction_date": {
+                        "type": "string",
+                        "pattern": "d{4}-d{1,2}-d{1,2} d{1,2}:d{1,2}:d{1,2}",
+                        "example": "2021-12-04 20:49:26"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": ["Reaction endpoints"],
         "description": "Delete a reaction | Authorization: bearer token",

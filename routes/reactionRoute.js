@@ -12,10 +12,13 @@ const {
 
 const router = express.Router({ mergeParams: true });
 
+// Route for getting whether a post is liked/disliked by a user and route for deleting a reaction
 router
   .route('/')
   .get(passport.authenticate('jwt', { session: false }), has_reacted_by_user)
   .delete(passport.authenticate('jwt', { session: false }), reaction_delete);
+
+// Route for counting all likes/dislikes of a post and route for user to react to a post
 router
   .route('/:isLiked')
   .get(reaction_get)

@@ -12,6 +12,7 @@ const {
 
 const { httpError } = require('../utils/errors');
 
+// Controller for getting all the users
 const user_list_get = async (req, res, next) => {
   const users = await getAllUsers();
 
@@ -24,6 +25,7 @@ const user_list_get = async (req, res, next) => {
   next(err);
 };
 
+// Controller for getting a specific user
 const user_get = async (req, res, next) => {
   const user = await getUser(req.params.userId, next);
 
@@ -36,9 +38,15 @@ const user_get = async (req, res, next) => {
   next(err);
 };
 
+// Controller for users to delete their profile
 const user_delete = async (req, res, next) => {
   try {
-    const deleted = await deleteUser(req.params.userId, req.user, next);
+    const deleted = await deleteUser(
+      req.params.userId,
+      req.user.user_id,
+      req.user.role,
+      next
+    );
     res.json({ message: `User deleted: ${deleted} ` });
   } catch (e) {
     const err = httpError('Error deleting user', 400);
@@ -47,6 +55,7 @@ const user_delete = async (req, res, next) => {
   }
 };
 
+// Controller for users to modify their profile
 const user_update = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -73,6 +82,7 @@ const user_update = async (req, res, next) => {
   }
 };
 
+// Function to check if a user is possessing a valid token
 const checkToken = (req, res, next) => {
   console.log('req.user', req.user);
   if (!req.user) {

@@ -4,9 +4,11 @@ const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
 
+// Model for checking if the user logged in or not
+// Parameter: params(email of user)
+// Return: object in JSON format containing user info in database
 const getUserLogin = async (params, next) => {
   try {
-    console.log(params);
     const [rows] = await promisePool.execute(
       'SELECT * FROM camping_user WHERE email = ?;',
       params
@@ -19,6 +21,8 @@ const getUserLogin = async (params, next) => {
   }
 };
 
+// Model for getting all users
+// Return: array of objects in JSON format
 const getAllUsers = async (next) => {
   try {
     const [rows] = await promisePool.query(
@@ -32,6 +36,9 @@ const getAllUsers = async (next) => {
   }
 };
 
+// Model for getting a specific user
+// Parameter: userId from req.params
+// Return: object in JSON format containing user info in database
 const getUser = async (userId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -46,6 +53,9 @@ const getUser = async (userId, next) => {
   }
 };
 
+// Model for registering new user
+// Parameter: user object from req.body
+// Return: object in JSON format containing predetermined message
 const insertUser = async (user, next) => {
   const isEmailExisting = await isEmailExiting(user.email);
 
@@ -62,10 +72,13 @@ const insertUser = async (user, next) => {
   next(err);
 };
 
-const deleteUser = async (userId, requestUser, next) => {
+// Model for users to delete their profile
+// Parameter: userId from req.params, requestUserId and requestUserRole from req.user
+// Return: object in JSON format containing user info in database
+const deleteUser = async (userId, requestUserId, requestUserRole, next) => {
   let params = [userId];
 
-  if (requestUser.user_id != userId && requestUser.role !== 0) {
+  if (requestUserRole != 0 && requestUserId != userId) {
     params = [0];
   }
 
@@ -82,12 +95,11 @@ const deleteUser = async (userId, requestUser, next) => {
   }
 };
 
+// Model for users to modify their profile
+// Parameter: user object from req.body, requestUserId and requestUserEmail from req.user
+// Return: object in JSON format containing user info in database
 const updateUser = async (user, requestUserId, requestUserEmail, next) => {
   let params = [user.username, requestUserEmail, user.password, requestUserId];
-
-  /* if (requestUser.role === 0) {
-    params = [user.username, user.email, user.password, user.userId];
-  } */
 
   try {
     const [rows] = await promisePool.query(
@@ -102,6 +114,7 @@ const updateUser = async (user, requestUserId, requestUserEmail, next) => {
   }
 };
 
+// Function for checking if the email has already registered to the database
 const isEmailExiting = async (email) => {
   const [rows] = await promisePool.query(
     'SELECT * FROM camping_user WHERE email = ?;',

@@ -14,12 +14,14 @@ const {
 
 const router = express.Router();
 
+// Route to check if a user has a valid token
 router.get(
   '/token',
   passport.authenticate('jwt', { session: false }),
   checkToken
 );
 
+// Route to get all the users and route for the user to modify their profile
 router
   .route('/')
   .get(user_list_get)
@@ -30,6 +32,7 @@ router
     user_update
   );
 
+// Route to get a specific user
 router
   .route('/:userId')
   .get(user_get)

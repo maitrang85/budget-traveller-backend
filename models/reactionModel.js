@@ -4,6 +4,9 @@ const pool = require('../database/db');
 const { httpError } = require('../utils/errors');
 const promisePool = pool.promise();
 
+// Model for getting total likes or dislike of a post
+// Parameter: postID from req.params, 0 (for number of dislikes) and 1 (number of likes) from req.params
+// Return: object in JSON format containing reaction_count
 const getReactions = async (postId, isLiked, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -18,6 +21,10 @@ const getReactions = async (postId, isLiked, next) => {
   }
 };
 
+// Model for checking if the currently logged-in user liked or disliked of a post
+// Parameter: postID from req.params, userId from req.user
+// Return: object in JSON format containing array of rows extracted form the database if the user reacted to the post.
+// Otherwise, return empty array.
 const hasReactedByUser = async (postId, userId, next) => {
   try {
     const [rows] = await promisePool.query(
@@ -32,11 +39,14 @@ const hasReactedByUser = async (postId, userId, next) => {
   }
 };
 
-const insertReactions = async (reaction, next) => {
+// Model for inserting like or dislike of a post
+// Parameter: postID from req.params, userId from req.user, isLiked from req.params
+// Return: object in JSON format containing predetermined message
+const insertReactions = async (userId, postId, isLiked, next) => {
   try {
     const [rows] = await promisePool.query(
       'INSERT INTO camping_reaction(post_id, user_id, isLiked) VALUES (?, ?, ?);',
-      [reaction.postId, reaction.userId, reaction.isLiked]
+      [postId, userId, isLiked]
     );
     return rows.affectedRows === 1;
   } catch (e) {
@@ -46,6 +56,9 @@ const insertReactions = async (reaction, next) => {
   }
 };
 
+// Model for undoing a like or dislike of a post
+// Parameter: postID from req.params, userId from req.user
+// Return: object in JSON format containing predetermined message
 const deleteReaction = async (postId, userId, next) => {
   try {
     const [rows] = await promisePool.execute(

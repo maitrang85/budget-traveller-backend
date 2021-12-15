@@ -9,6 +9,7 @@ const {
 
 const { httpError } = require('../utils/errors');
 
+// Controller for getting total likes or dislikes of a post
 const reaction_get = async (req, res, next) => {
   const reaction = await getReactions(
     req.params.postId,
@@ -25,6 +26,7 @@ const reaction_get = async (req, res, next) => {
   next(err);
 };
 
+// Controller for checking if a post is liked/disliked by the logged-in user
 const has_reacted_by_user = async (req, res, next) => {
   try {
     const reacted = await hasReactedByUser(
@@ -43,15 +45,15 @@ const has_reacted_by_user = async (req, res, next) => {
   }
 };
 
+// Controller for user to react to a post
 const reaction_post = async (req, res, next) => {
   try {
-    const reaction = req.body;
-
-    reaction.userId = req.user.user_id;
-    reaction.postId = req.params.postId;
-    reaction.isLiked = req.params.isLiked;
-
-    const id = await insertReactions(reaction, next);
+    const id = await insertReactions(
+      req.user.user_id,
+      req.params.postId,
+      req.params.isLiked,
+      next
+    );
     res.json({ message: `A reaction created: ${id}` });
   } catch (e) {
     const err = httpError('Error posting reaction', 400);
@@ -60,6 +62,7 @@ const reaction_post = async (req, res, next) => {
   }
 };
 
+// Controller for undoing the like/dislike of a post
 const reaction_delete = async (req, res, next) => {
   try {
     const deleted = await deleteReaction(
