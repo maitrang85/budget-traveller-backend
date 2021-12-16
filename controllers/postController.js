@@ -59,6 +59,12 @@ const post_post = async (req, res, next) => {
     return;
   }
 
+  if (!req.file) {
+    const err = httpError('Please input one valid image file', 400);
+    next(err);
+    return;
+  }
+
   // Making thumbnail for frontend to use
   if (req.file.mimetype.includes('image')) {
     const thumb = makeThumbnail(req.file.path, req.file.filename);
@@ -101,7 +107,7 @@ const post_post = async (req, res, next) => {
 
   try {
     const id = await insertPost(post, next);
-    res.json({ message: `A post created with id ${id}`, post_id: id });
+    res.json({ message: `Your post created`, post_id: id });
   } catch (e) {
     console.log('Error here', e);
     const err = httpError('Error uploading post', 400);
@@ -134,6 +140,12 @@ const post_update = async (req, res, next) => {
   if (!errors.isEmpty()) {
     console.error('update_post validation', errors.array());
     const err = httpError('data not valid', 400);
+    next(err);
+    return;
+  }
+
+  if (!req.file) {
+    const err = httpError('Please input one valid image file', 400);
     next(err);
     return;
   }
