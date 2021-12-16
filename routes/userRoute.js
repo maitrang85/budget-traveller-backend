@@ -2,6 +2,7 @@
 
 const express = require('express');
 const passport = require('../utils/pass');
+const { body } = require('express-validator');
 
 const {
   checkToken,
@@ -13,18 +14,28 @@ const {
 
 const router = express.Router();
 
+// Route to check if a user has a valid token
 router.get(
   '/token',
   passport.authenticate('jwt', { session: false }),
   checkToken
 );
 
-router.route('/').get(user_list_get);
+// Route to get all the users and route for the user to modify their profile
+router
+  .route('/')
+  .get(user_list_get)
+  .put(
+    body('username').isLength({ min: 3 }),
+    body('password').matches('(?=.*[A-Z]).{8,}'),
+    passport.authenticate('jwt', { session: false }),
+    user_update
+  );
 
+// Route to get a specific user
 router
   .route('/:userId')
   .get(user_get)
-  .delete(passport.authenticate('jwt', { session: false }), user_delete)
-  .put(passport.authenticate('jwt', { session: false }), user_update);
+  .delete(passport.authenticate('jwt', { session: false }), user_delete);
 
 module.exports = router;
