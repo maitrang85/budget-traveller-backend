@@ -48,4 +48,4 @@ MAPBOX_TOKEN=
 5. Create initial tables for the database by running the script in the file databasev5.sql
 
 ## API Documentation
-At local environment: `https://localhost:8000/apiDoc
+At local environment: `https://localhost:8000/apiDoc`
