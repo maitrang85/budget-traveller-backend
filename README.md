@@ -21,7 +21,7 @@ Users are divided into three different groups (unauthenticated users, authentica
 ### Additional features
 - Most populars posts are displayed on the main page for easy accessibility of useful information.
 - Newest posts and comments will be placed on the main page and on the top to provide updated information.
-- Campsites can be filtered according to regions in Finland.
+- Campsites can be filtered according to regions in Finland abd by their price (free or paid).
 - A map of the campsite location and its surrounding area to equip campers with necessary information for trip planning
 - Responsive UI that is beautifully fitted to both desktop and mobile screens
 
