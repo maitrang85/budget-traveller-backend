@@ -58,7 +58,7 @@ const user_post = async (req, res, next) => {
     // Inserting the info into the database using authModel
     const user = req.body;
     const id = await insertUser(user, next);
-    res.json({ message: `A user created with id ${id}`, user_id: id });
+    res.json({ message: `Your profile created`, user_id: id });
   } catch (e) {
     const err = httpError('Error uploading user', 400);
     next(err);
