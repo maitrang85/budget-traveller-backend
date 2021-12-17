@@ -27,11 +27,11 @@ Users are divided into three different groups (unauthenticated users, authentica
 
 ## How to install the project
 ### Technical requirements
-[Node.js (version >= 14.18.1)](https://nodejs.org/en/)
+[Node.js (version >= 14.18.1)](https://nodejs.org/en/) and 
 [Mariadb (version >= 10.6.5)](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.6.5l)
 ### Getting started
 1. Clone the project to your local machine using `git clone https://gitlab.metropolia.fi/trangtn/budget-traveler-backend.git`
-2. Install dependencies using `npm i``
+2. Install dependencies using `npm i`
 3. Create file `.env` in the root directory of the project
 4. Input the following content to `.env` and fill in the relevant information after '=' 
 ```
